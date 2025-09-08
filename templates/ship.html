@@ -8,6 +8,9 @@
         <a href="/hello"><img src="/static/img/image.jpg" alt="home"></a>
     </h1>
 </header>
-    <h1>Информация о заказе №{{ .ship.ID }}</h1>
-    <h2>Заголовок: {{ .ship.Title }}</h2>
+    <h1>{{ .ship.Name }}</h1>
+    <h3><span>Вместимость:</span>{{ .ship.Capacity }}</h3>
+    <h3><span>Габариты:</span> длина {{ .ship.Length }} м, ширина {{ .ship.Width }} м</h3>
+    <h3><span>Максимальное число контейнеров на 40 футов:</span> {{ .ship.Containers }} штук</h3>
+    <h3><span>Особенности:</span>{{ .ship.Features }}</h3>
 </html> 

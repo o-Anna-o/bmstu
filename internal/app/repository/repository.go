@@ -12,25 +12,64 @@ func NewRepository() (*Repository, error) {
 	return &Repository{}, nil
 }
 
-type Ship struct { // вот наша новая структура
-	ID    int    // поля структур, которые передаются в шаблон
-	Title string // ОБЯЗАТЕЛЬНО должны быть написаны с заглавной буквы (то есть публичными)
+type Ship struct {
+	ID         int
+	Name       string
+	Speed      int
+	Capacity   float32
+	Length     float32
+	Width      float32
+	Draft      float32
+	Containers int
+	Features   string
 }
 
 func (r *Repository) GetShips() ([]Ship, error) {
 	// имитируем работу с БД. Типа мы выполнили sql запрос и получили эти строки из БД
 	ships := []Ship{ // массив элементов из наших структур
 		{
-			ID:    1,
-			Title: "first ship",
+			ID:         1,
+			Name:       "Ever Ace",
+			Speed:      242,
+			Capacity:   23992,
+			Length:     400,
+			Width:      61.53,
+			Draft:      17.0,
+			Containers: 11996,
+			Features:   "самый большой в мире, двигатель Wartsila 70950 кВт",
 		},
 		{
-			ID:    2,
-			Title: "second ship",
+			ID:         2,
+			Name:       "FESCO Diomid",
+			Speed:      105,
+			Capacity:   3108,
+			Length:     195,
+			Width:      32.20,
+			Draft:      11.0,
+			Containers: 536,
+			Features:   "построен в 2010 г., судно класса Ice1 (для Арктики), дизельный двигатель, используется на Северном морском пути",
 		},
 		{
-			ID:    3,
-			Title: "third ship",
+			ID:         3,
+			Name:       "HMM Algeciras",
+			Speed:      243,
+			Capacity:   23964,
+			Length:     399.9,
+			Width:      61.0,
+			Draft:      16.5,
+			Containers: 11982,
+			Features:   "двигатель MAN B&W 11G95ME-C9.5 мощностью 64 000 кВт, двойные двигатели, система рекуперации энергии, класс DNV GL",
+		},
+		{
+			ID:         4,
+			Name:       "MSC Gulsun",
+			Speed:      245,
+			Capacity:   23756,
+			Length:     399.9,
+			Width:      61.4,
+			Draft:      16.0,
+			Containers: 11878,
+			Features:   "первый в мире контейнеровоз, вмещающий более 23 000 TEU, двигатель MAN B&W 11G95ME-C9.5, класс DNV GL",
 		},
 	}
 	// обязательно проверяем ошибки, и если они появились - передаем выше, то есть хендлеру
@@ -65,7 +104,7 @@ func (r *Repository) GetShipsByTitle(title string) ([]Ship, error) {
 
 	var result []Ship
 	for _, ship := range ships {
-		if strings.Contains(strings.ToLower(ship.Title), strings.ToLower(title)) {
+		if strings.Contains(strings.ToLower(ship.Name), strings.ToLower(title)) {
 			result = append(result, ship)
 		}
 	}
