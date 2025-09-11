@@ -22,6 +22,11 @@
  -->
     <ul>
         {{ range .ships }}
+    <img src="http://localhost:9000/bmstu-photos/{{.PhotoURL}}" 
+         alt="{{.Name}}"
+         class="ship-thumbnail"
+         onerror="this.style.display='none'">
+    
         <h2>
             <a href="/ship/{{ .ID }}"> {{ .Name }} </a>
         </h2>

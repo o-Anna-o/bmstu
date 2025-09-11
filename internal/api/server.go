@@ -27,7 +27,10 @@ func StartServer() {
 	// справа путь к папке, в которой лежит статика
 
 	r.GET("/loading_time", handler.GetShips)
-	r.GET("/ship/:id", handler.GetShip) // вот наш новый обработчик
+	r.GET("/ship/:id", handler.GetShip)
+
+	// НОВЫЙ маршрут для загрузки файлов
+	r.POST("/upload", handler.UploadFile)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	log.Println("Server down")

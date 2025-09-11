@@ -8,7 +8,13 @@
         <a href="/loading_time"><img src="/static/img/image.jpg" alt="home"></a>
     </h1>
 </header>
-    <h1>{{ .ship.Name }}</h1>
+    <h1>{{ .ship.Name }}</h1>    
+    <div class="ship-image">
+        <img src="http://localhost:9000/loading-time-img/img/{{.ship.PhotoURL}}" 
+             alt="{{.ship.Name}}"
+             onerror="this.style.display='none'">
+    </div>
+
     <h3><span>Вместимость:</span>{{ .ship.Capacity }}</h3>
     <h3><span>Габариты:</span> длина {{ .ship.Length }} м, ширина {{ .ship.Width }} м</h3>
     <h3><span>Максимальное число контейнеров на 40 футов:</span> {{ .ship.Containers }} штук</h3>

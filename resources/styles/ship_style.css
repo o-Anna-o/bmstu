@@ -12,3 +12,34 @@ h2 {
     color: #333;
     font-size: 18px;
 }
+
+.ship-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.ship-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.ship-details h3 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.ship-details span {
+    font-weight: bold;
+    color: #0066cc;
+}
+
+.ship-thumbnail {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+}
