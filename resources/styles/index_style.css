@@ -1,15 +1,66 @@
-header img { 
-    height: 50px;
-    cursor: pointer;
+body {
+    background-color: #242422;
 }
-ul {
-    list-style-type: none;
+body, button, p, h1, h2, a {
+    font-family: "Gilroy", sans-serif;
+    color: #ffff;
+}  
+
+p {
+    font-size: 16px;
+    margin: 0;
+}
+button {
+    background-color: #AA9B7D;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+}
+
+.header {
+    margin-top: 10px;
+    height: 52px;
+    gap: 30px;
+}
+.header, .header__search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input, .header__search-item {
+    margin-top: 5px;
+    height: 52px;
+}
+.header__search { 
+    padding-top: 10px;
+    gap: 10px;
+}
+
+.header__search-input {
+    padding: 12px 20px;
+    width: 390px;
+}
+
+.search-btn {
+    padding: 12px 20px;
+}
+
+input {
+    background-color: #242422;
+    border-color: #ffff;
+    border-style: solid 1px;
+    border-radius: 5px;
+}
+
+.home-img { 
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
 }
 
 ul li a {
     text-decoration: none;
-    color: #333;
-    font-size: 18px;
 }
 
 ul li a:hover {
@@ -17,7 +68,43 @@ ul li a:hover {
 }
 
 h2 {
-    color: #333;
-    font-size: 18px;
-    margin-top: 20px;
+    font-size: 24px;
+    margin: 0;
+}
+
+.ship-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.ship-item {
+    width: 633px;
+    background-color: #3A3A3A;
+    padding: 50px 36px;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+}
+
+.ship-image {
+    width: 561px;
+}
+.ship-item-text {
+    width: 490px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.card-btn {
+    padding: 13px 172px;
+    width: 490px;
+    font-size: 16px;
+    border: none;
 }

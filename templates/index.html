@@ -4,18 +4,24 @@
     <link rel="stylesheet" href="/static/styles/index_style.css">
 </head>
 <body>
-<header>
+
+<div class="header">
     <h1>
-        <a href="/loading_time"><img src="/static/img/image.jpg" alt="home"></a>
+        <a href="/loading_time"><img class="home-img" src="/static/img/home-img.svg" alt="home"></a>
     </h1>
-</header>
+
+    <form class="header__search" action="/loading_time" method="GET">
+        <input class="header__search-item header__search-input" type="text" name="query" placeholder="Поиск по вместимости контейнеровоза" value="{{ .query }}">
+        <button class="header__search-item search-btn" type="submit">Найти</button>
+    </form>
+</div>
 
 <form action="/loading_time" method="GET">
-    <input type="text" name="query" placeholder="Введите запрос" value="{{ .query }}">
-    <button type="submit">Найти</button>
+        <input type="text" name="query" placeholder="Поиск контейнеровоза" value="{{ .query }}">
+        <button class="search-btn" type="submit">Найти</button>
 </form>
 
-<ul>
+<ul class="ship-cards">
     {{ range .ships }}
     <li class="ship-item">
         <div class="ship-image">
@@ -27,10 +33,11 @@
         <h2>
             <a href="/ship/{{ .ID }}">{{ .Name }}</a>
         </h2>
-        
-        <p><b>Вместимость:</b> {{.Capacity}} TEU</p>
-        <p><b>Краны:</b> {{.Сranes}} одновременно</p>
-        <!-- Добавьте другие поля по необходимости -->
+        <div class="ship-item-text">
+            <p><b>Вместимость:</b> {{.Capacity}} TEU</p>
+            <p><b>Краны:</b> {{.Сranes}} одновременно</p>
+        </div>
+        <button class="card-btn">Выбрать</button> 
     </li>
     {{ end }}
 </ul>
