@@ -2,7 +2,9 @@ header img {
     height: 50px;
     cursor: pointer;
 }
-
+ul {
+    list-style-type: none;
+}
 
 ul li a {
     text-decoration: none;

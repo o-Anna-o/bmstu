@@ -20,6 +20,7 @@ type Ship struct {
 	Length     float32
 	Width      float32
 	Draft      float32
+	Сranes     int
 	Containers int
 	Features   string
 	PhotoURL   string
@@ -36,6 +37,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 			Length:     400,
 			Width:      61.53,
 			Draft:      17.0,
+			Сranes:     6,
 			Containers: 11996,
 			Features:   "самый большой в мире, двигатель Wartsila 70950 кВт",
 			PhotoURL:   "ever-ace.png",
@@ -48,6 +50,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 			Length:     195,
 			Width:      32.20,
 			Draft:      11.0,
+			Сranes:     3,
 			Containers: 536,
 			Features:   "построен в 2010 г., судно класса Ice1 (для Арктики), дизельный двигатель, используется на Северном морском пути",
 			PhotoURL:   "fesco-diomid.png",
@@ -60,6 +63,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 			Length:     399.9,
 			Width:      61.0,
 			Draft:      16.5,
+			Сranes:     7,
 			Containers: 11982,
 			Features:   "двигатель MAN B&W 11G95ME-C9.5 мощностью 64 000 кВт, двойные двигатели, система рекуперации энергии, класс DNV GL",
 			PhotoURL:   "hmm-algeciras.png",
@@ -72,6 +76,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 			Length:     399.9,
 			Width:      61.4,
 			Draft:      16.0,
+			Сranes:     7,
 			Containers: 11878,
 			Features:   "первый в мире контейнеровоз, вмещающий более 23 000 TEU, двигатель MAN B&W 11G95ME-C9.5, класс DNV GL",
 			PhotoURL:   "msc-gulsun.png",

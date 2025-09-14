@@ -3,33 +3,36 @@
     <title>Loading time</title>
     <link rel="stylesheet" href="/static/styles/index_style.css">
 </head>
+<body>
 <header>
     <h1>
         <a href="/loading_time"><img src="/static/img/image.jpg" alt="home"></a>
     </h1>
 </header>
+
 <form action="/loading_time" method="GET">
     <input type="text" name="query" placeholder="Введите запрос" value="{{ .query }}">
-    <!-- value="{{ .query }}"  нужно для того, чтобы из обработчика передавать
-    введенный запрос обратно на страницу. Тем самым введенный текст в поле поиска будет сохраняться
-    -->
     <button type="submit">Найти</button>
 </form>
-<!-- 
-    <h2>
-        {{ .time }}
-    </h2>
- -->
-    <ul>
-        {{ range .ships }}
-    <img src="http://localhost:9000/bmstu-photos/{{.PhotoURL}}" 
-         alt="{{.Name}}"
-         class="ship-thumbnail"
-         onerror="this.style.display='none'">
-    
+
+<ul>
+    {{ range .ships }}
+    <li class="ship-item">
+        <div class="ship-image">
+            <img src="http://localhost:9000/loading-time-img/img/{{.PhotoURL}}" 
+                 alt="{{.Name}}"
+                 onerror="this.style.display='none'">
+        </div>
+        
         <h2>
-            <a href="/ship/{{ .ID }}"> {{ .Name }} </a>
+            <a href="/ship/{{ .ID }}">{{ .Name }}</a>
         </h2>
-        {{ end }}
-    </ul>
+        
+        <p><b>Вместимость:</b> {{.Capacity}} TEU</p>
+        <p><b>Краны:</b> {{.Сranes}} одновременно</p>
+        <!-- Добавьте другие поля по необходимости -->
+    </li>
+    {{ end }}
+</ul>
+</body>
 </html>
