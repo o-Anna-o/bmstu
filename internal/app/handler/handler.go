@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"loading_time/internal/app/repository"
 	"net/http"
 	"strconv"
@@ -40,18 +39,15 @@ func NewHandler(r *repository.Repository) *Handler {
 
 	logrus.Info("MinIO connected successfully")
 
-	// Создаем bucket
-	bucketName := "loading_time_img"
+	// проверка подключения к бакету loading-time-img
+	bucketName := "loading-time-img"
 	exists, err := client.BucketExists(context.Background(), bucketName)
 	if err != nil {
 		logrus.Errorf("Bucket check error: %v", err)
-	} else if !exists {
-		err = client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{})
-		if err != nil {
-			logrus.Errorf("Bucket creation error: %v", err)
-		} else {
-			logrus.Infof("Bucket %s created", bucketName)
-		}
+	} else if exists {
+		logrus.Infof("Bucket %s is available", bucketName)
+	} else {
+		logrus.Warnf("Bucket %s does not exist", bucketName)
 	}
 
 	return &Handler{
@@ -99,50 +95,4 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "ship.html", gin.H{
 		"ship": ship,
 	})
-}
-
-// НОВЫЙ метод для загрузки файлов в MinIO
-func (h *Handler) UploadFile(ctx *gin.Context) {
-	// Проверяем, что MinIO клиент инициализирован
-	if h.MinioClient == nil {
-		ctx.String(http.StatusInternalServerError, "Storage service unavailable")
-		return
-	}
-
-	file, header, err := ctx.Request.FormFile("file")
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Bad request: "+err.Error())
-		return
-	}
-	defer file.Close()
-
-	bucketName := "loading_time_img"
-	objectName := header.Filename
-
-	// Загружаем файл в MinIO
-	_, err = h.MinioClient.PutObject(context.Background(), bucketName, objectName, file, header.Size, minio.PutObjectOptions{
-		ContentType: header.Header.Get("Content-Type"),
-	})
-
-	if err != nil {
-		logrus.Errorf("Upload error: %v", err)
-		ctx.String(http.StatusInternalServerError, "Upload failed: "+err.Error())
-		return
-	}
-
-	// Генерируем URL для просмотра изображения
-	fileURL := fmt.Sprintf("http://localhost:9000/%s/%s", bucketName, objectName)
-
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"Message":  "File uploaded successfully to cloud storage!",
-		"FileURL":  fileURL,
-		"FileName": objectName,
-	})
-}
-
-func getMinIOImageURL(fileName string) string {
-	if fileName == "" {
-		return "" // или URL заглушки
-	}
-	return fmt.Sprintf("http://localhost:9000/bmstu-photos/%s", fileName)
 }
