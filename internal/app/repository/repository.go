@@ -2,6 +2,8 @@ package repository
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 	"strings"
 )
 
@@ -82,8 +84,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 			PhotoURL:   "msc-gulsun.png",
 		},
 	}
-	// обязательно проверяем ошибки, и если они появились - передаем выше, то есть хендлеру
-	// тут я снова искусственно обработаю "ошибку" чисто чтобы показать вам как их передавать выше
+
 	if len(ships) == 0 {
 		return nil, fmt.Errorf("массив пустой")
 	}
@@ -95,7 +96,7 @@ func (r *Repository) GetShip(id int) (Ship, error) {
 	// тут у вас будет логика получения нужной услуги, тоже наверное через цикл в первой лабе, и через запрос к БД начиная со второй
 	ships, err := r.GetShips()
 	if err != nil {
-		return Ship{}, err // тут у нас уже есть кастомная ошибка из нашего метода, поэтому мы можем просто вернуть ее
+		return Ship{}, err
 	}
 
 	for _, ship := range ships {
@@ -106,7 +107,7 @@ func (r *Repository) GetShip(id int) (Ship, error) {
 	return Ship{}, fmt.Errorf("заказ не найден") // тут нужна кастомная ошибка, чтобы понимать на каком этапе возникла ошибка и что произошло
 }
 
-func (r *Repository) GetShipsByTitle(title string) ([]Ship, error) {
+func (r *Repository) GetShipsByName(name string) ([]Ship, error) {
 	ships, err := r.GetShips()
 	if err != nil {
 		return []Ship{}, err
@@ -114,10 +115,30 @@ func (r *Repository) GetShipsByTitle(title string) ([]Ship, error) {
 
 	var result []Ship
 	for _, ship := range ships {
-		if strings.Contains(strings.ToLower(ship.Name), strings.ToLower(title)) {
+		if strings.Contains(strings.ToLower(ship.Name), strings.ToLower(name)) {
 			result = append(result, ship)
 		}
 	}
 
+	return result, nil
+}
+
+func (r *Repository) GetShipsByCapacity(capacity string) ([]Ship, error) {
+	ships, err := r.GetShips()
+	if err != nil {
+		return []Ship{}, err
+	}
+	searchCapacity, err := strconv.ParseFloat(capacity, 32)
+	if err != nil {
+		return []Ship{}, nil
+	}
+
+	var result []Ship
+	for _, ship := range ships {
+		diff := math.Abs(float64(ship.Capacity) - searchCapacity)
+		if diff <= searchCapacity*0.4 {
+			result = append(result, ship)
+		}
+	}
 	return result, nil
 }

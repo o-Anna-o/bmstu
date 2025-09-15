@@ -5,7 +5,6 @@ import (
 	"loading_time/internal/app/repository"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -60,23 +59,30 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	var ships []repository.Ship
 	var err error
 
-	searchQuery := ctx.Query("query")
-	if searchQuery == "" {
+	capacityQuery := ctx.Query("capacity_query")
+	nameQuery := ctx.Query("name_query")
+
+	if capacityQuery == "" && nameQuery == "" {
 		ships, err = h.Repository.GetShips()
 		if err != nil {
 			logrus.Error(err)
 		}
+	} else if capacityQuery != "" {
+		ships, err = h.Repository.GetShipsByCapacity(capacityQuery)
+		if err != nil {
+			logrus.Error(err)
+		}
 	} else {
-		ships, err = h.Repository.GetShipsByTitle(searchQuery)
+		ships, err = h.Repository.GetShipsByName(nameQuery)
 		if err != nil {
 			logrus.Error(err)
 		}
 	}
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"time":  time.Now().Format("15:04:05"),
-		"ships": ships,
-		"query": searchQuery,
+		"ships":          ships,
+		"capacity_query": capacityQuery,
+		"name_query":     nameQuery,
 	})
 }
 
