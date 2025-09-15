@@ -28,7 +28,7 @@ button {
     align-items: center;
 }
 
-input, .header__search-item {
+input, .header__search-item, .page__search-item {
     margin-top: 5px;
     height: 52px;
 }
@@ -43,7 +43,8 @@ input, .header__search-item {
 }
 
 .search-btn {
-    padding: 12px 20px;
+    padding: 11px 56px;
+    height: 52px;
 }
 
 input {
@@ -51,6 +52,24 @@ input {
     border-color: #ffff;
     border-style: solid 1px;
     border-radius: 5px;
+    color: #ffff;
+}
+.search-input {
+    font-size: 16px;
+    padding-left: 16px;
+}
+.page__search-input {
+    width: 1270px;
+}
+
+.page__search {
+    margin-left: 40px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .home-img { 

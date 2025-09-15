@@ -11,14 +11,14 @@
     </h1>
 
     <form class="header__search" action="/loading_time" method="GET">
-        <input class="header__search-item header__search-input" type="text" name="query" placeholder="Поиск по вместимости контейнеровоза" value="{{ .query }}">
+        <input class="search-input header__search-item header__search-input" type="text" name="query" placeholder="Поиск по вместимости контейнеровоза" value="{{ .query }}">
         <button class="header__search-item search-btn" type="submit">Найти</button>
     </form>
 </div>
 
-<form action="/loading_time" method="GET">
-        <input type="text" name="query" placeholder="Поиск контейнеровоза" value="{{ .query }}">
-        <button class="search-btn" type="submit">Найти</button>
+<form class="page__search" action="/loading_time" method="GET">
+        <input class="search-input page__search-input page__search-item" type="text" name="query" placeholder="Поиск контейнеровоза" value="{{ .query }}">
+        <button class="search-btn page__search-item" type="submit">Найти</button>
 </form>
 
 <ul class="ship-cards">
