@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Repository struct {
@@ -26,6 +27,18 @@ type Ship struct {
 	Containers int
 	Features   string
 	PhotoURL   string
+}
+type Request struct {
+	ID                  int
+	ShipID              int
+	Status              int
+	CreationDate        time.Time
+	LoadingDate         time.Time
+	CompletionDate      time.Time
+	Containers20ftCount int
+	Containers40ftCount int
+	LoadingSpeed        int
+	UserID              int
 }
 
 func (r *Repository) GetShips() ([]Ship, error) {
