@@ -1,6 +1,14 @@
+
 body {
+    margin: 0;
     background-color: #242422;
+    width: 1295px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 body, button, p, h1, h2, a {
     font-family: "Gilroy", sans-serif;
     color: #ffff;
@@ -15,6 +23,10 @@ button {
     border-radius: 5px;
     font-size: 16px;
     border: none;
+}
+.header-icon {
+    height: 40px;
+    cursor: pointer;
 }
 
 .header {
@@ -31,6 +43,7 @@ button {
 input, .header__search-item, .page__search-item {
     margin-top: 5px;
     height: 52px;
+    width: 192px;
 }
 .header__search { 
     padding-top: 10px;
@@ -59,10 +72,11 @@ input {
     padding-left: 16px;
 }
 .page__search-input {
-    width: 1270px;
+    width: 1150px;
 }
 
 .page__search {
+    width: 1350px;
     margin-left: 40px;
     margin-bottom: 30px;
     margin-top: 30px;
@@ -70,12 +84,6 @@ input {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.home-img { 
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
 }
 
 ul li a {
@@ -92,29 +100,29 @@ h2 {
 }
 
 .ship-cards {
+    width: 1350px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 28px;
 }
 .ship-item {
-    width: 633px;
     background-color: #3A3A3A;
-    padding: 50px 36px;
+    padding: 50px 50px;
     border-radius: 5px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 28px;
+    gap: 26px;
 }
 
 .ship-image {
     width: 561px;
 }
 .ship-item-text {
-    width: 490px;
+    width: 489px;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -123,7 +131,7 @@ h2 {
 
 .card-btn {
     padding: 13px 172px;
-    width: 490px;
+    width: 489px;
     font-size: 16px;
     border: none;
 }

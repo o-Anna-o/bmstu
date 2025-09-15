@@ -26,7 +26,8 @@ func StartServer() {
 	// слева название папки, в которую выгрузится наша статика
 	// справа путь к папке, в которой лежит статика
 
-	r.GET("/loading_time", handler.GetShips)
+	r.GET("/home", handler.GetShips)
+	r.GET("/loading_time/:id", handler.GetLoadingTime)
 	r.GET("/ship/:id", handler.GetShip)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

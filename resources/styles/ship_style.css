@@ -1,45 +1,71 @@
-header img {
-    height: 30px;
+.header-icon {
+    height: 40px;
     cursor: pointer;
 }
-
-h1 {
-    color: #333;
-    font-size: 24px;
-}
-
-h2 {
-    color: #333;
-    font-size: 18px;
-}
-
-.ship-container {
-    max-width: 800px;
+body {
+    width: 1050px;
     margin: 0 auto;
-    padding: 20px;
+}
+header {
+    margin-top: 10px;
+}
+header, .ship-card__btns {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+body {
+    background-color: #242422;
+}
+body, .btn, p, h1, h2, a {
+    font-family: "Gilroy", sans-serif;
+    color: #ffff;
+    text-decoration: none;
+}  
+p, h1, h2, a {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 5px;
+}
+.ship-card {
+    background-color: #3A3A3A;
+    border-radius: 5px;
+    padding: 33px 120px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
 }
 
-.ship-image img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 20px;
+.ship-card__img {
+    width: 814px;
 }
 
-.ship-details h3 {
-    margin: 10px 0;
-    color: #333;
+.ship-card__text {
+    width: 772px;
+}
+.ship-card__btns {
+    gap: 20px;
+    width: 798px;
 }
 
-.ship-details span {
-    font-weight: bold;
-    color: #0066cc;
+.btn {
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
 }
-
-.ship-thumbnail {
-    width: 100px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 15px;
+.ship-card__btn {
+    padding: 12px 0;
+    width: 389px;
+}
+.beige-btn {
+    background-color: #AA9B7D;
+}
+.transparent-btn {
+    background-color: #3A3A3A;
+    border: solid #ffff 1px;
 }

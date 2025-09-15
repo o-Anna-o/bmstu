@@ -1,22 +1,38 @@
 <html lang="en">
 <head>
-    <title>Loading time</title>
+    <title>Расчёт времени погрузки</title>
     <link rel="stylesheet" href="/static/styles/ship_style.css">
 </head>
-<header>
-    <h1>
-        <a href="/loading_time"><img class="home-img" src="/static/img/home-img.svg" alt="home"></a>
-    </h1>
-</header>
-    <h1>{{ .ship.Name }}</h1>    
-    <div class="ship-image">
-        <img src="http://localhost:9000/loading-time-img/img/{{.ship.PhotoURL}}" 
-             alt="{{.ship.Name}}"
-             onerror="this.style.display='none'">
-    </div>
+<body>
+    <header>
+        <h1>
+            <a href="/home"><img class="home-img header-icon" src="/static/img/home-img.svg" alt="home"></a>
+        </h1>
+        <h1>
+            <a href="/loading_time"><img class="loading_time-img header-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nO3QMQ4BURSF4ckUEol1qGgobIGFaaxIi0ah0lAohE0QkU9GRvcGY15iIv72nXv+d2+S/BzoYq08a3RelTex8zl7tJ4JxnlwhbTE1imW+eykKNTGCVcM3i1/gH4+e0EvFJiKxywkyH4fi3NIcCepiKKerwnQwDZwhkVMwSYgmEcRlOUveMlfUG/BUTwOIcEoe4hRjmHVS9SHGxku7S0HDKVsAAAAAElFTkSuQmCC" alt="home"></a>
+        </h1>
+    </header>
+    <div class="ship-card">
+        
+        <h1>{{ .ship.Name }}</h1>  
+        <img class="ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.ship.PhotoURL}}" 
+                alt="{{.ship.Name}}"
+                onerror="this.style.display='none'">
 
-    <h3><span>Вместимость:</span>{{ .ship.Capacity }}</h3>
-    <h3><span>Габариты:</span> длина {{ .ship.Length }} м, ширина {{ .ship.Width }} м</h3>
-    <h3><span>Максимальное число контейнеров на 40 футов:</span> {{ .ship.Containers }} штук</h3>
-    <h3><span>Особенности:</span>{{ .ship.Features }}</h3>
+        <div class="ship-card__text">
+            <p><b>Вместимость:</b> {{ .ship.Capacity }} TEU</p>
+            <p><b>Габариты:</b> длина {{ .ship.Length }} м, ширина {{ .ship.Width }} м</p>
+            <p><b>Максимальное число контейнеров на 40 футов:</b> {{ .ship.Containers }} штук</p>
+            <p><b>Особенности:</b> {{ .ship.Features }}</p>
+        </div>
+        <div class="ship-card__btns">
+            <a href="/loading_time/{{.ID}}" class="ship-card__btn beige-btn btn">Выбрать для расчёта</a>
+            <a href="/home" class="ship-card__btn transparent-btn btn">Назад</a>
+        </div>
+        
+        
+    </div>
+</body>
+
+    
 </html> 

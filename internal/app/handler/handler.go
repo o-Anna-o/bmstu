@@ -102,3 +102,19 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 		"ship": ship,
 	})
 }
+
+func (h *Handler) GetLoadingTime(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		logrus.Error(err)
+	}
+	ship, err := h.Repository.GetShip(id)
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
+		"ship": ship,
+	})
+}

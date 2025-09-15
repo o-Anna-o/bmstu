@@ -136,7 +136,7 @@ func (r *Repository) GetShipsByCapacity(capacity string) ([]Ship, error) {
 	var result []Ship
 	for _, ship := range ships {
 		diff := math.Abs(float64(ship.Capacity) - searchCapacity)
-		if diff <= searchCapacity*0.4 {
+		if diff <= searchCapacity*0.30 {
 			result = append(result, ship)
 		}
 	}
