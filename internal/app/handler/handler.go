@@ -5,7 +5,6 @@ import (
 	"loading_time/internal/app/repository"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -104,12 +103,12 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) GetLoadingTime(ctx *gin.Context) {
+func (h *Handler) GetRequest(ctx *gin.Context) {
 
 	idStr := ctx.Param("id")
 	id, _ := strconv.Atoi(idStr)
 
-	request, err := h.Repository.GetLoadingTimeByID(id)
+	request, err := h.Repository.GetRequest(id)
 	if err != nil {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
@@ -117,14 +116,13 @@ func (h *Handler) GetLoadingTime(ctx *gin.Context) {
 
 	ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
 		"request": request,
-		"Date":    time.Now().Format("02.01.2006"),
 	})
 }
-func (h *Handler) AddToLoadingTime(ctx *gin.Context) {
+func (h *Handler) AddToRequest(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, _ := strconv.Atoi(idStr)
 
-	ship, err := h.Repository.GetShipByID(id)
+	ship, err := h.Repository.GetShip(id)
 	if err != nil {
 		ctx.String(http.StatusNotFound, err.Error())
 		return

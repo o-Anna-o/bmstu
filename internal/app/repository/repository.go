@@ -170,7 +170,7 @@ func (r *Repository) GetShips() ([]Ship, error) {
 }
 
 func (r *Repository) GetShip(id int) (Ship, error) {
-	// тут у вас будет логика получения нужной услуги, тоже наверное через цикл в первой лабе, и через запрос к БД начиная со второй
+
 	ships, err := r.GetShips()
 	if err != nil {
 		return Ship{}, err
@@ -220,18 +220,9 @@ func (r *Repository) GetShipsByCapacity(capacity string) ([]Ship, error) {
 	return result, nil
 }
 
-func (r *Repository) GetLoadingTimeByID(id int) (Request, error) {
-	if request, ok := r.Requests[id]; ok { // Исправил на r.Requests (с большой буквы)
+func (r *Repository) GetRequest(id int) (Request, error) {
+	if request, ok := r.Requests[id]; ok {
 		return request, nil
 	}
 	return Request{}, fmt.Errorf("заявка с id=%d не найдена", id)
-}
-
-func (r *Repository) GetShipByID(id int) (Ship, error) {
-	for _, s := range r.Ships {
-		if s.ID == id {
-			return s, nil
-		}
-	}
-	return Ship{}, fmt.Errorf("контейнеровоз с id=%d не найден", id)
 }

@@ -28,8 +28,8 @@ func StartServer() {
 
 	r.GET("/home", handler.GetShips)
 	r.GET("/ship/:id", handler.GetShip)
-	r.GET("/loading_time", handler.GetLoadingTime)
-	r.GET("/loading_time/add/:id", handler.AddToLoadingTime)
+	r.GET("/request/:id", handler.GetRequest)
+	r.GET("/request/add/:id", handler.AddToRequest)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	log.Println("Server down")
