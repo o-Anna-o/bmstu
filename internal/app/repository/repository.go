@@ -226,3 +226,19 @@ func (r *Repository) GetRequest(id int) (Request, error) {
 	}
 	return Request{}, fmt.Errorf("заявка с id=%d не найдена", id)
 }
+
+func (r *Repository) RemoveShipFromRequest(requestID int, shipID int) error {
+	request, ok := r.Requests[requestID]
+	if !ok {
+		return fmt.Errorf("заявка с id=%d не найдена", requestID)
+	}
+	for i, shipInRequest := range request.Ships {
+		if shipInRequest.Ship.ID == shipID {
+			request.Ships = append(request.Ships[:i], request.Ships[i+1:]...)
+			r.Requests[requestID] = request
+			return nil
+		}
+	}
+
+	return fmt.Errorf("корабль с id=%d не найден в заявке", shipID)
+}

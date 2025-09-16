@@ -8,51 +8,53 @@
         <h1>
             <a href="/home"><img class="home-img header-icon" src="/static/img/home-img.svg" alt="home"></a>
         </h1>
-        <h1>
-            <a href="/request"><img class="loading_time-img header-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nO3QMQ4BURSF4ckUEol1qGgobIGFaaxIi0ah0lAohE0QkU9GRvcGY15iIv72nXv+d2+S/BzoYq08a3RelTex8zl7tJ4JxnlwhbTE1imW+eykKNTGCVcM3i1/gH4+e0EvFJiKxywkyH4fi3NIcCepiKKerwnQwDZwhkVMwSYgmEcRlOUveMlfUG/BUTwOIcEoe4hRjmHVS9SHGxku7S0HDKVsAAAAAElFTkSuQmCC" alt="home"></a>
-        </h1>
     </header>
     <div class="request">
         
-        <h1>Расчёт времени погрузки контейнеров </h1>  
+        <h1>Расчёт времени погрузки контейнеров</h1>  
+        
         <div class="request__counts">
             <div class="request__cnt-20-f">
                 <p>Количество 20-футовых контейнеров</p>
-                <input class="request__cnt-20-f" type="number" name="capacity_query" placeholder="Введите целое число" value="{{ .capacity_query }}">
+                <input class="request__cnt-20-f" type="number" name="containers_20ft" placeholder="Введите целое число" value="0">
             </div>
             <div class="request__cnt-40-f">
                 <p>Количество 40-футовых контейнеров</p>
-                <input class="request__cnt-40-f" type="number" name="capacity_query" placeholder="Введите целое число" value="{{ .capacity_query }}">
+                <input class="request__cnt-40-f" type="number" name="containers_40ft" placeholder="Введите целое число" value="0">
             </div>
-        </div>
-        <h3>Выбранный контейнеровоз</h3>
-        <div class="request__cards">
-            <div class="request__card">
-                <h1>{{ .ship.Name }}</h1>  
-                <img class="ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.ship.PhotoURL}}" 
-                alt="{{.ship.Name}}"
-                onerror="this.style.display='none'">
-
-                <div class="ship-card__text">
-                    <p><b>Вместимость:</b> {{ .ship.Capacity }} TEU</p>
-                    <p><b>Габариты:</b> длина {{ .ship.Length }} м, ширина {{ .ship.Width }} м</p>
-                    <p><b>Краны:</b> {{ .ship.Cranes }} одновременно</p>
-                </div>
-            </div>
-        </div>
-
-        <img class="ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.ship.PhotoURL}}" 
-                alt="{{.ship.Name}}"
-                onerror="this.style.display='none'">
-
-       
-        <div class="ship-card__btns">
-            <a href="/loading_time/" class="ship-card__btn beige-btn btn">Выбрать для расчёта</a>
         </div>
         
+        <h3>Выбранные контейнеровозы</h3>
+        <div class="request__cards">
+            {{ range .request.Ships }}
+            <div class="request__card">
+                <h2>{{ .Ship.Name }}</h2>
+                <img class="ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.Ship.PhotoURL}}" 
+                     alt="{{.Ship.Name}}"
+                     onerror="this.style.display='none'">
+
+                <div class="ship-card__text">
+                    <p><b>Вместимость:</b> {{ .Ship.Capacity }} TEU</p>
+                    <p><b>Габариты:</b> длина {{ .Ship.Length }} м, ширина {{ .Ship.Width }} м</p>
+                    <p><b>Краны:</b> {{ .Ship.Cranes }} одновременно</p>
+                    <p><b>Количество:</b> {{ .Count }} шт.</p>
+                </div>
+                <div class="ship-card__btns">
+                    <a href="/request/{{$.request.ID}}/remove/{{.Ship.ID}}" 
+                    class="ship-card__btn red-btn btn"
+                    onclick="return confirm('Удалить {{.Ship.Name}} из заявки?')">
+                    Удалить
+                    </a>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+
+        <div class="ship-card__btns">
+            <a href="/home" class="ship-card__btn beige-btn btn">Добавить ещё корабль</a>
+            <a href="/home" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
+        </div>
         
     </div>
 </body>
-
-    
-</html> 
+</html>

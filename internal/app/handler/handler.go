@@ -118,6 +118,7 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 		"request": request,
 	})
 }
+
 func (h *Handler) AddToRequest(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, _ := strconv.Atoi(idStr)
@@ -145,4 +146,31 @@ func (h *Handler) AddToRequest(ctx *gin.Context) {
 
 	h.Repository.Requests[1] = request
 	ctx.Redirect(http.StatusFound, "/request/1")
+}
+
+func (h *Handler) RemoveShipFromRequest(ctx *gin.Context) {
+	requestIDStr := ctx.Param("id")
+	shipIDStr := ctx.Param("ship_id")
+
+	requestID, err := strconv.Atoi(requestIDStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid request ID")
+		return
+	}
+
+	shipID, err := strconv.Atoi(shipIDStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid ship ID")
+		return
+	}
+
+	// Удаляем конкретный корабль из заявки
+	err = h.Repository.RemoveShipFromRequest(requestID, shipID)
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	// Перенаправляем обратно на страницу заявки
+	ctx.Redirect(http.StatusFound, "/request/"+requestIDStr)
 }
