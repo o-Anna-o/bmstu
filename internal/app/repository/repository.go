@@ -26,14 +26,14 @@ type Ship struct {
 	PhotoURL   string
 }
 
-type RequestShip struct {
+type ShipInRequest struct {
 	Ship  Ship
 	Count int
 }
 
 type Request struct {
 	ID                  int
-	Ships               []RequestShip
+	Ships               []ShipInRequest
 	Containers20ftCount int
 	Containers40ftCount int
 	Comment             string
@@ -100,7 +100,7 @@ func NewRepository() (*Repository, error) {
 	}
 
 	requests := make(map[int]Request)
-	requests[1] = Request{ID: 1, Ships: []RequestShip{}}
+	requests[1] = Request{ID: 1, Ships: []ShipInRequest{}}
 
 	return &Repository{Ships: ships, Requests: requests}, nil
 }
@@ -225,4 +225,13 @@ func (r *Repository) GetLoadingTimeByID(id int) (Request, error) {
 		return request, nil
 	}
 	return Request{}, fmt.Errorf("заявка с id=%d не найдена", id)
+}
+
+func (r *Repository) GetShipByID(id int) (Ship, error) {
+	for _, s := range r.Ships {
+		if s.ID == id {
+			return s, nil
+		}
+	}
+	return Ship{}, fmt.Errorf("контейнеровоз с id=%d не найден", id)
 }

@@ -120,3 +120,31 @@ func (h *Handler) GetLoadingTime(ctx *gin.Context) {
 		"Date":    time.Now().Format("02.01.2006"),
 	})
 }
+func (h *Handler) AddToLoadingTime(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, _ := strconv.Atoi(idStr)
+
+	ship, err := h.Repository.GetShipByID(id)
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	request := h.Repository.Requests[1]
+	found := false
+
+	for i, rs := range request.Ships {
+		if rs.Ship.ID == ship.ID {
+			request.Ships[i].Count++
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		request.Ships = append(request.Ships, repository.ShipInRequest{Ship: ship, Count: 1})
+	}
+
+	h.Repository.Requests[1] = request
+	ctx.Redirect(http.StatusFound, "/request/1")
+}
