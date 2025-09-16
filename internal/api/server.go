@@ -28,6 +28,7 @@ func StartServer() {
 
 	r.GET("/home", handler.GetShips)
 	r.GET("/ship/:id", handler.GetShip)
+	r.GET("/request", handler.GetRequest)
 	r.GET("/request/:id", handler.GetRequest)
 	r.GET("/request/add/:id", handler.AddToRequest)
 	r.GET("/request/:id/remove/:ship_id", handler.RemoveShipFromRequest)

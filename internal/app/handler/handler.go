@@ -104,11 +104,28 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 }
 
 func (h *Handler) GetRequest(ctx *gin.Context) {
-
+	// Получаем ID из параметра URL (если есть)
 	idStr := ctx.Param("id")
-	id, _ := strconv.Atoi(idStr)
 
-	request, err := h.Repository.GetRequest(id)
+	// Если ID не передан, показываем пустую страницу
+	if idStr == "" {
+		ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
+			"request": repository.Request{
+				ID:    0, // ID=0 означает пустую заявку
+				Ships: []repository.ShipInRequest{},
+			},
+		})
+		return
+	}
+
+	// Если ID передан, работаем как раньше
+	requestID, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid request ID")
+		return
+	}
+
+	request, err := h.Repository.GetRequest(requestID)
 	if err != nil {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
