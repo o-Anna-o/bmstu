@@ -23,10 +23,25 @@ body, .btn, p, h1, h2, a {
     color: #ffff;
     text-decoration: none;
 }  
-p, h1, h2, a {
+p, h1, h2, h3, a {
     margin: 0;
     padding: 0;
-    padding-bottom: 5px;
+    line-height: 1.4;
+}
+h1, h2 {
+    font-weight: 600;
+}
+h1 {
+    font-size: 46px;
+}
+h2 {
+    font-size: 30px;
+}
+p {
+    font-size: 25px;
+}
+input {
+    font-size: 18px;
 }
 .ship-card {
     background-color: #3A3A3A;
@@ -45,7 +60,7 @@ p, h1, h2, a {
 }
 
 .ship-card__text {
-    width: 772px;
+    width: 814px;
 }
 .ship-card__btns {
     gap: 20px;

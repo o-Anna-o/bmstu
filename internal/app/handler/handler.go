@@ -107,7 +107,7 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
 	if idStr == "" {
-		ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
+		ctx.HTML(http.StatusOK, "request.html", gin.H{
 			"request": repository.Request{
 				ID:    0,
 				Ships: []repository.ShipInRequest{},
@@ -128,7 +128,7 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 		return
 	}
 
-	ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
+	ctx.HTML(http.StatusOK, "request.html", gin.H{
 		"request": request,
 	})
 }
