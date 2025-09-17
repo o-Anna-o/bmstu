@@ -13,7 +13,6 @@
         
         <h1>Расчёт времени погрузки контейнеров</h1>  
         
-        <!-- Блок с полями ввода (всегда показываем) -->
         <div class="request__counts">
             <div class="request__cnt-20-f">
                 <p>Количество 20-футовых контейнеров</p>
@@ -28,7 +27,6 @@
         <h3>Выбранные контейнеровозы</h3>
         <div class="request__cards">
             {{ if .request.Ships }}
-                <!-- Если есть корабли - показываем их -->
                 {{ range .request.Ships }}
                 <div class="request__card">
                     <h2>{{ .Ship.Name }}</h2>
@@ -44,15 +42,13 @@
                     </div>
                     <div class="ship-card__btns">
                         <a href="/request/{{$.request.ID}}/remove/{{.Ship.ID}}" 
-                        class="ship-card__btn red-btn btn"
-                        onclick="return confirm('Удалить {{.Ship.Name}} из заявки?')">
+                        class="ship-card__btn red-btn btn">
                         Удалить
                         </a>
                     </div>
                 </div>
                 {{ end }}
             {{ else }}
-                <!-- Если корзина пустая - сообщение -->
                 <div class="empty-message">
                     <p>Нет выбранных контейнеровозов. Добавьте контейнеровоз для расчета.</p>
                 </div>
@@ -62,7 +58,6 @@
         <div class="ship-card__btns">
             <a href="/home" class="ship-card__btn beige-btn btn">Добавить контейнеровоз</a>
             {{ if .request.Ships }}
-                <!-- Кнопка расчета показывается только если есть корабли -->
                 <a href="/home" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
             {{ end }}
         </div>

@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box; /* включает padding в общую ширину элемента */
+}
 
 body {
     margin: 0;
@@ -108,7 +111,7 @@ h2 {
 }
 .ship-item {
     background-color: #3A3A3A;
-    padding: 50px 50px;
+    padding: 40px 40px;
     border-radius: 5px;
 
     display: flex;

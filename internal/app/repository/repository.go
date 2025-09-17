@@ -178,10 +178,10 @@ func (r *Repository) GetShip(id int) (Ship, error) {
 
 	for _, ship := range ships {
 		if ship.ID == id {
-			return ship, nil // если нашли, то просто возвращаем найденный заказ (услугу) без ошибок
+			return ship, nil
 		}
 	}
-	return Ship{}, fmt.Errorf("заказ не найден")
+	return Ship{}, fmt.Errorf("Контейнеровоз не найден")
 }
 
 func (r *Repository) GetShipsByName(name string) ([]Ship, error) {

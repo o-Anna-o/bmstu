@@ -104,21 +104,18 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 }
 
 func (h *Handler) GetRequest(ctx *gin.Context) {
-	// Получаем ID из параметра URL (если есть)
 	idStr := ctx.Param("id")
 
-	// Если ID не передан, показываем пустую страницу
 	if idStr == "" {
 		ctx.HTML(http.StatusOK, "loading_time.html", gin.H{
 			"request": repository.Request{
-				ID:    0, // ID=0 означает пустую заявку
+				ID:    0,
 				Ships: []repository.ShipInRequest{},
 			},
 		})
 		return
 	}
 
-	// Если ID передан, работаем как раньше
 	requestID, err := strconv.Atoi(idStr)
 	if err != nil {
 		ctx.String(http.StatusBadRequest, "Invalid request ID")
@@ -181,13 +178,11 @@ func (h *Handler) RemoveShipFromRequest(ctx *gin.Context) {
 		return
 	}
 
-	// Удаляем конкретный корабль из заявки
 	err = h.Repository.RemoveShipFromRequest(requestID, shipID)
 	if err != nil {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
 	}
 
-	// Перенаправляем обратно на страницу заявки
 	ctx.Redirect(http.StatusFound, "/request/"+requestIDStr)
 }
