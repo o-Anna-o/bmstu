@@ -9,7 +9,7 @@ import (
 
 type Repository struct {
 	Ships    []Ship
-	Requests map[int]Request // Изменил на map[int]Request
+	Requests map[int]Request
 }
 
 type Ship struct {
