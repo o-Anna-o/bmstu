@@ -59,16 +59,15 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	var ships []repository.Ship
 	var err error
 
-	capacityQuery := ctx.Query("capacity_query")
 	nameQuery := ctx.Query("name_query")
 
-	if capacityQuery == "" && nameQuery == "" {
+	if nameQuery == "" {
 		ships, err = h.Repository.GetShips()
 		if err != nil {
 			logrus.Error(err)
 		}
-	} else if capacityQuery != "" {
-		ships, err = h.Repository.GetShipsByCapacity(capacityQuery)
+	} else if nameQuery != "" {
+		ships, err = h.Repository.GetShipsByName(nameQuery)
 		if err != nil {
 			logrus.Error(err)
 		}
@@ -80,9 +79,8 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"ships":          ships,
-		"capacity_query": capacityQuery,
-		"name_query":     nameQuery,
+		"ships":      ships,
+		"name_query": nameQuery,
 	})
 }
 

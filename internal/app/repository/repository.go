@@ -2,8 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"math"
-	"strconv"
 	"strings"
 )
 
@@ -197,26 +195,6 @@ func (r *Repository) GetShipsByName(name string) ([]Ship, error) {
 		}
 	}
 
-	return result, nil
-}
-
-func (r *Repository) GetShipsByCapacity(capacity string) ([]Ship, error) {
-	ships, err := r.GetShips()
-	if err != nil {
-		return []Ship{}, err
-	}
-	searchCapacity, err := strconv.ParseFloat(capacity, 32)
-	if err != nil {
-		return []Ship{}, nil
-	}
-
-	var result []Ship
-	for _, ship := range ships {
-		diff := math.Abs(float64(ship.Capacity) - searchCapacity)
-		if diff <= searchCapacity*0.30 {
-			result = append(result, ship)
-		}
-	}
 	return result, nil
 }
 
