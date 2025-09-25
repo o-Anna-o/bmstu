@@ -3,7 +3,6 @@
 }
 
 body {
-    margin: 0;
     background-color: #242422;
     width: 1295px;
     margin: 0 auto;
@@ -37,6 +36,7 @@ p {
 .header-icon {
     height: 40px;
     cursor: pointer;
+    padding-left: 24px;
 }
 
 .header {
@@ -74,7 +74,7 @@ input {
 
 .page__search {
     width: 1350px;
-    margin-left: 60px;
+    margin-left: 30px;
     margin-top: 10px;
 
     display: flex;
