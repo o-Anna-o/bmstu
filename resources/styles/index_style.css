@@ -40,11 +40,10 @@ p {
 }
 
 .header {
-    margin-top: 10px;
+    width: 1295px;
+    margin: 10px 0;
     height: 52px;
-    gap: 30px;
-}
-.header {
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,8 +75,7 @@ input {
 .page__search {
     width: 1350px;
     margin-left: 60px;
-    margin-bottom: 30px;
-    margin-top: 30px;
+    margin-top: 10px;
 
     display: flex;
     align-items: center;
