@@ -195,7 +195,7 @@ func (r *Repository) GetShip(id int) (Ship, error) {
 			return ship, nil
 		}
 	}
-	return Ship{}, fmt.Errorf("Контейнеровоз не найден")
+	return Ship{}, fmt.Errorf("контейнеровоз не найден")
 }
 
 func (r *Repository) GetShipsByName(name string) ([]Ship, error) {
@@ -218,5 +218,5 @@ func (r *Repository) GetRequest(id int) (Request, error) {
 	if request, ok := r.Requests[id]; ok {
 		return request, nil
 	}
-	return Request{}, fmt.Errorf("заявка с id=%d не найдена", id)
+	return Request{}, fmt.Errorf("заявка c id=%d не найдена", id)
 }

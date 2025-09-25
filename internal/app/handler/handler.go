@@ -63,25 +63,17 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 
 	if nameQuery == "" {
 		ships, err = h.Repository.GetShips()
-		if err != nil {
-			logrus.Error(err)
-		}
-	} else if nameQuery != "" {
-		ships, err = h.Repository.GetShipsByName(nameQuery)
-		if err != nil {
-			logrus.Error(err)
-		}
 	} else {
 		ships, err = h.Repository.GetShipsByName(nameQuery)
-		if err != nil {
-			logrus.Error(err)
-		}
 	}
-	// для подсчета количества кораблей
+
+	if err != nil {
+		logrus.Error(err)
+	}
+	// для подсчета кораблей в заявке
 	request, err := h.Repository.GetRequest(1)
 	requestCount := 0
 	if err == nil {
-
 		for _, shipInRequest := range request.Ships {
 			requestCount += shipInRequest.Count
 		}
