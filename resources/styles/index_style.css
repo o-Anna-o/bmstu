@@ -128,3 +128,26 @@ ul li a {
     padding: 14px 32px;
 }
 
+.cart-link {
+    position: relative;
+    display: inline-block; /* чтобы позиционировать дочерние элементы */
+    text-decoration: none;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #AA9B7D;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+

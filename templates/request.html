@@ -55,12 +55,15 @@
                 </div>
             {{ end }}
         </div>
-
-        <div class="ship-card__btns">
-            <a href="/ships" class="ship-card__btn beige-btn btn">Добавить контейнеровоз</a>
-            {{ if .request.Ships }}
-                <a href="/ships" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
-            {{ end }}
+        <div class="fields">
+            <div class="fields_item fields__comment">
+                <p>Комментарий</p>
+                <input class="fields__comment--input" type="text" name="comment--input" value=" {{.request.Comment}} ">
+            </div>
+            <div class="fields_item fields__result">
+                <p>Общее время погрузки</p>
+                <input class="fields__result--input" type="text" name="result--input" value=" {{.request.LoadingTime}} ">
+            </div>
         </div>
         
     </div>
