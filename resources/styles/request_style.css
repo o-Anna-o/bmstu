@@ -66,13 +66,13 @@ input {
     flex-direction: row;
     gap: 60px;
 }
-.request__cnt {
+.request__cnt, .fields_item {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
 
 }
-.request__cnt-input {
+.request__cnt-input, .fields__result--input, .fields__comment--input {
     background-color: #3A3A3A;
     padding: 12px 20px;
     width: 390px;
@@ -80,6 +80,7 @@ input {
     border-radius: 5px;
     color: #fff;
 }
+
 .request__cards {
     display: flex;
     flex-direction: column;
@@ -127,6 +128,21 @@ input {
     border-radius: 5px;
     color: #fff;
 }
+
+.fields {
+    width: 1198px;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+.fields__comment--input { 
+    width: 844px;
+}
+.fields__result--input {
+    width: 323px;
+}
+
+/*_______________________________*/
 
 .ship-card__btns {
     display: flex;

@@ -7,7 +7,7 @@ import (
 
 type Repository struct {
 	Ships    []Ship
-	Requests map[int]Request // Изменил на map[int]Request
+	Requests map[int]Request
 }
 
 type Ship struct {
@@ -35,6 +35,7 @@ type Request struct {
 	Containers20ftCount int
 	Containers40ftCount int
 	Comment             string
+	LoadingTime         string
 }
 
 func NewRepository() (*Repository, error) {
@@ -90,8 +91,7 @@ func NewRepository() (*Repository, error) {
 			Containers: 11878,
 			Features:   "первый в мире контейнеровоз, вмещающий более 23 000 TEU, двигатель MAN B&W 11G95ME-C9.5, класс DNV GL",
 			PhotoURL:   "msc-gulsun.png",
-		},
-	}
+		}}
 
 	if len(ships) == 0 {
 		return nil, fmt.Errorf("массив пустой")
@@ -179,7 +179,7 @@ func (r *Repository) GetShip(id int) (Ship, error) {
 			return ship, nil
 		}
 	}
-	return Ship{}, fmt.Errorf("Контейнеровоз не найден")
+	return Ship{}, fmt.Errorf("контейнеровоз не найден")
 }
 
 func (r *Repository) GetShipsByName(name string) ([]Ship, error) {
@@ -202,7 +202,7 @@ func (r *Repository) GetRequest(id int) (Request, error) {
 	if request, ok := r.Requests[id]; ok {
 		return request, nil
 	}
-	return Request{}, fmt.Errorf("заявка с id=%d не найдена", id)
+	return Request{}, fmt.Errorf("заявка c id=%d не найдена", id)
 }
 
 func (r *Repository) RemoveShipFromRequest(requestID int, shipID int) error {
