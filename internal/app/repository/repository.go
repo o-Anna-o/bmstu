@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 type Repository struct {
@@ -10,32 +11,61 @@ type Repository struct {
 	Requests map[int]Request
 }
 
+type User struct {
+	UserID              int     `gorm:"primaryKey;column:user_id"`
+	FIO                 string  `gorm:"size:100;not null"`
+	Login               string  `gorm:"size:100;unique;not null"`
+	Password            string  `gorm:"size:10;not null"`
+	Contacts            string  `gorm:"size:100"`
+	CargoWeight         float64 `gorm:"type:decimal(10,2)"`
+	Containers20ftCount int     `gorm:"default:0"`
+	Containers40ftCount int     `gorm:"default:0"`
+	IsModerator         bool    `gorm:"default:false"`
+}
+
 type Ship struct {
-	ID         int
-	Name       string
-	Speed      int
-	Capacity   float32
-	Length     float32
-	Width      float32
-	Draft      float32
+	ID         int     `gorm:"primaryKey"`
+	Name       string  `gorm:"size:200;not null"`
+	Capacity   float64 `gorm:"type:decimal(10,2)"`
+	Length     float64 `gorm:"type:decimal(10,2)"`
+	Width      float64 `gorm:"type:decimal(10,2)"`
+	Draft      float64 `gorm:"type:decimal(10,2)"`
 	Cranes     int
 	Containers int
-	Features   string
-	PhotoURL   string
+	Features   string `gorm:"type:text"`
+	PhotoURL   string `gorm:"size:500"`
+	IsActive   bool   `gorm:"default:true"`
 }
 
 type ShipInRequest struct {
-	Ship  Ship
-	Count int
+	RequestID int       `gorm:"primaryKey"`
+	ShipID    int       `gorm:"primaryKey"`
+	Count     int       `gorm:"not null;default:1"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+
+	Ship    Ship    `gorm:"foreignKey:ShipID"`
+	Request Request `gorm:"foreignKey:RequestID"`
 }
 
 type Request struct {
-	ID                  int
-	Ships               []ShipInRequest
-	Containers20ftCount int
-	Containers40ftCount int
-	Comment             string
-	LoadingTime         string
+	ID        int       `gorm:"primaryKey"`
+	Status    string    `gorm:"type:varchar(20);default:'черновик'"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UserID    int       `gorm:"not null"`
+
+	FormedAt    *time.Time `gorm:"null"`
+	CompletedAt *time.Time `gorm:"null"`
+	ModeratorID *int       `gorm:"null"`
+
+	Containers20ftCount int     `gorm:"default:0"`
+	Containers40ftCount int     `gorm:"default:0"`
+	Comment             string  `gorm:"type:text"`
+	LoadingSpeed        string  `gorm:"type:text"`
+	LoadingTime         float64 `gorm:"type:decimal(10,2)"`
+
+	Ships     []ShipInRequest `gorm:"foreignKey:RequestID"`
+	User      User            `gorm:"foreignKey:UserID"`
+	Moderator *User           `gorm:"foreignKey:ModeratorID"`
 }
 
 func NewRepository() (*Repository, error) {
@@ -43,7 +73,6 @@ func NewRepository() (*Repository, error) {
 		{
 			ID:         1,
 			Name:       "Ever Ace",
-			Speed:      242,
 			Capacity:   23992,
 			Length:     400,
 			Width:      61.53,
@@ -56,7 +85,6 @@ func NewRepository() (*Repository, error) {
 		{
 			ID:         2,
 			Name:       "FESCO Diomid",
-			Speed:      105,
 			Capacity:   3108,
 			Length:     195,
 			Width:      32.20,
@@ -69,7 +97,6 @@ func NewRepository() (*Repository, error) {
 		{
 			ID:         3,
 			Name:       "HMM Algeciras",
-			Speed:      243,
 			Capacity:   23964,
 			Length:     399.9,
 			Width:      61.0,
@@ -82,7 +109,6 @@ func NewRepository() (*Repository, error) {
 		{
 			ID:         4,
 			Name:       "MSC Gulsun",
-			Speed:      245,
 			Capacity:   23756,
 			Length:     399.9,
 			Width:      61.4,
@@ -109,7 +135,6 @@ func (r *Repository) GetShips() ([]Ship, error) {
 		{
 			ID:         1,
 			Name:       "Ever Ace",
-			Speed:      242,
 			Capacity:   23992,
 			Length:     400,
 			Width:      61.53,
@@ -122,7 +147,6 @@ func (r *Repository) GetShips() ([]Ship, error) {
 		{
 			ID:         2,
 			Name:       "FESCO Diomid",
-			Speed:      105,
 			Capacity:   3108,
 			Length:     195,
 			Width:      32.20,
@@ -135,7 +159,6 @@ func (r *Repository) GetShips() ([]Ship, error) {
 		{
 			ID:         3,
 			Name:       "HMM Algeciras",
-			Speed:      243,
 			Capacity:   23964,
 			Length:     399.9,
 			Width:      61.0,
@@ -148,7 +171,6 @@ func (r *Repository) GetShips() ([]Ship, error) {
 		{
 			ID:         4,
 			Name:       "MSC Gulsun",
-			Speed:      245,
 			Capacity:   23756,
 			Length:     399.9,
 			Width:      61.4,
