@@ -70,13 +70,12 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	if err != nil {
 		logrus.Error(err)
 	}
-	// для подсчета кораблей в заявке
-	request, err := h.Repository.GetRequest(1)
-	requestCount := 0
-	if err == nil {
-		for _, shipInRequest := range request.Ships {
-			requestCount += shipInRequest.Count
-		}
+
+	// УПРОЩЕННЫЙ ПОДСЧЕТ - используем новый метод
+	requestCount, err := h.Repository.GetRequestCount(1) // userID = 1 для демо
+	if err != nil {
+		logrus.Error("Ошибка подсчета заявки:", err)
+		requestCount = 0 // В случае ошибки показываем 0
 	}
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
@@ -91,11 +90,15 @@ func (h *Handler) GetShip(ctx *gin.Context) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		logrus.Error(err)
+		ctx.String(http.StatusBadRequest, "Invalid ship ID")
+		return
 	}
 
 	ship, err := h.Repository.GetShip(id)
 	if err != nil {
 		logrus.Error(err)
+		ctx.String(http.StatusNotFound, "Ship not found")
+		return
 	}
 
 	ctx.HTML(http.StatusOK, "ship.html", gin.H{
@@ -107,11 +110,21 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
 	if idStr == "" {
+		// Если ID не указан, показываем черновую заявку пользователя
+		request, err := h.Repository.GetOrCreateDraftRequest(1)
+		if err != nil {
+			ctx.HTML(http.StatusOK, "request.html", gin.H{
+				"request": repository.Request{
+					ID:      0,
+					Ships:   []repository.ShipInRequest{},
+					Comment: "Ошибка загрузки заявки",
+				},
+			})
+			return
+		}
+
 		ctx.HTML(http.StatusOK, "request.html", gin.H{
-			"request": repository.Request{
-				ID:    0,
-				Ships: []repository.ShipInRequest{},
-			},
+			"request": request,
 		})
 		return
 	}
@@ -124,7 +137,13 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 
 	request, err := h.Repository.GetRequest(requestID)
 	if err != nil {
-		ctx.String(http.StatusNotFound, err.Error())
+		ctx.HTML(http.StatusOK, "request.html", gin.H{
+			"request": repository.Request{
+				ID:      requestID,
+				Ships:   []repository.ShipInRequest{},
+				Comment: "Заявка не найдена или удалена",
+			},
+		})
 		return
 	}
 
@@ -158,31 +177,56 @@ func (h *Handler) RemoveShipFromRequest(ctx *gin.Context) {
 	ctx.Redirect(http.StatusFound, "/request/"+requestIDStr)
 }
 
+// ИСПРАВЛЕННЫЙ МЕТОД: Добавление в заявку
 func (h *Handler) AddToRequest(ctx *gin.Context) {
 	idStr := ctx.Param("id")
-	id, _ := strconv.Atoi(idStr)
-
-	ship, err := h.Repository.GetShip(id)
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		ctx.String(http.StatusNotFound, err.Error())
+		ctx.String(http.StatusBadRequest, "Invalid ship ID")
 		return
 	}
 
-	request := h.Repository.Requests[1]
-	found := false
-
-	for i, rs := range request.Ships {
-		if rs.Ship.ID == ship.ID {
-			request.Ships[i].Count++
-			found = true
-			break
-		}
+	// Проверяем существование корабля
+	_, err = h.Repository.GetShip(id)
+	if err != nil {
+		ctx.String(http.StatusNotFound, "Ship not found")
+		return
 	}
 
-	if !found {
-		request.Ships = append(request.Ships, repository.ShipInRequest{Ship: ship, Count: 1})
+	// Получаем или создаем черновую заявку
+	request, err := h.Repository.GetOrCreateDraftRequest(1) // userID = 1 для демо
+	if err != nil {
+		logrus.Error("Ошибка получения заявки:", err)
+		ctx.String(http.StatusInternalServerError, "Ошибка заявки")
+		return
 	}
 
-	h.Repository.Requests[1] = request
-	ctx.Redirect(http.StatusFound, "/request/1")
+	// Добавляем корабль в заявку через БД
+	err = h.Repository.AddToRequest(request.ID, id)
+	if err != nil {
+		logrus.Error("Ошибка добавления в заявку:", err)
+		ctx.String(http.StatusInternalServerError, "Ошибка добавления")
+		return
+	}
+
+	ctx.Redirect(http.StatusFound, "/request/"+strconv.Itoa(request.ID))
+}
+
+// НОВЫЙ МЕТОД: Удаление заявки
+func (h *Handler) DeleteRequest(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	requestID, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "Invalid request ID")
+		return
+	}
+
+	err = h.Repository.DeleteRequest(requestID)
+	if err != nil {
+		logrus.Error(err)
+		ctx.String(http.StatusInternalServerError, "Error deleting request")
+		return
+	}
+
+	ctx.Redirect(http.StatusFound, "/request")
 }
