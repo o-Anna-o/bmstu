@@ -14,11 +14,11 @@ func (r *Repository) GetRequest(id int) (ds.Request, error) {
 	return request, nil
 }
 
-// GetOrCreateUserDraft - получить или создать черновую заявку пользователя
+// GetOrCreateUserDraft - получить или создать черновую заявку пользователя (через ORM)
 func (r *Repository) GetOrCreateUserDraft(userID int) (ds.Request, error) {
 	var request ds.Request
 
-	// Ищем существующую черновую заявку С ПОДГРУЗКОЙ КОРАБЛЕЙ
+	// Ищем существующую черновую заявку (уже исключаем удаленные по статусу)
 	err := r.db.Preload("Ships.Ship").Where("user_id = ? AND status = ?", userID, "черновик").First(&request).Error
 	if err == nil {
 		return request, nil // Заявка найдена
@@ -31,12 +31,6 @@ func (r *Repository) GetOrCreateUserDraft(userID int) (ds.Request, error) {
 	}
 
 	err = r.db.Create(&request).Error
-	if err != nil {
-		return ds.Request{}, err
-	}
-
-	// После создания снова загружаем с подгрузкой кораблей
-	err = r.db.Preload("Ships.Ship").Where("id = ?", request.ID).First(&request).Error
 	if err != nil {
 		return ds.Request{}, err
 	}
@@ -68,4 +62,20 @@ func (r *Repository) AddShipToRequest(requestID, shipID int) error {
 // RemoveShipFromRequest - удалить корабль из заявки
 func (r *Repository) RemoveShipFromRequest(requestID, shipID int) error {
 	return r.db.Where("request_id = ? AND ship_id = ?", requestID, shipID).Delete(&ds.ShipInRequest{}).Error
+}
+
+// логическое удаление заявки через SQL
+func (r *Repository) DeleteRequestSQL(requestID int) error {
+	// Выполняем SQL UPDATE без ORM - меняем статус на 'удалён'
+	return r.db.Exec("UPDATE requests SET status = 'удалён' WHERE id = ?", requestID).Error
+}
+
+// GetRequestExcludingDeleted - получить заявку исключая удаленные (через ORM)
+func (r *Repository) GetRequestExcludingDeleted(id int) (ds.Request, error) {
+	var request ds.Request
+	err := r.db.Preload("Ships.Ship").Where("id = ? AND status != ?", id, "удалён").First(&request).Error
+	if err != nil {
+		return ds.Request{}, err
+	}
+	return request, nil
 }

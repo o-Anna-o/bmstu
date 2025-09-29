@@ -2,6 +2,7 @@ package handler
 
 import (
 	// "loading_time/internal/app/ds"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// AddShipToRequest - добавление корабля в заявку через ORM
 func (h *Handler) AddShipToRequest(c *gin.Context) {
 	shipIDStr := c.Param("ship_id")
 	shipID, err := strconv.Atoi(shipIDStr)
@@ -18,7 +18,7 @@ func (h *Handler) AddShipToRequest(c *gin.Context) {
 		return
 	}
 
-	// Получаем или создаем черновую заявку для пользователя (пока используем user_id = 1)
+	// Получаем или создаем черновую заявку для пользователя
 	request, err := h.Repository.GetOrCreateUserDraft(1)
 	if err != nil {
 		h.errorHandler(c, http.StatusInternalServerError, err)
@@ -33,9 +33,8 @@ func (h *Handler) AddShipToRequest(c *gin.Context) {
 	}
 
 	logrus.Infof("Корабль %d добавлен в заявку %d через ORM", shipID, request.ID)
-	logrus.Infof("Добавление корабля %d, редирект на: /request/1", shipID)
-	c.Redirect(http.StatusFound, "/request/1")
-	c.Redirect(http.StatusFound, "/request/1")
+
+	c.Redirect(http.StatusFound, fmt.Sprintf("/request/%d", request.ID))
 }
 
 // DeleteRequest - логическое удаление заявки через SQL
@@ -47,10 +46,14 @@ func (h *Handler) DeleteRequest(c *gin.Context) {
 		return
 	}
 
-	// TODO: Заглушка - нужно реализовать через SQL UPDATE
-	// Здесь должен быть код логического удаления заявки
+	// Логическое удаление заявки через SQL UPDATE (требование лабораторной)
+	err = h.Repository.DeleteRequestSQL(requestID)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
 
-	logrus.Infof("Заявка %d удалена через SQL UPDATE", requestID)
+	logrus.Infof("Заявка %d удалена через SQL UPDATE (статус изменен на 'удалён')", requestID)
 	c.Redirect(http.StatusFound, "/ships")
 }
 

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"loading_time/internal/app/ds"
 	"net/http"
 	"strconv"
@@ -25,7 +26,9 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 			})
 			return
 		}
-		requestID = request.ID
+		// ИСПРАВЛЕНИЕ: перенаправляем на URL с реальным ID заявки
+		ctx.Redirect(http.StatusFound, fmt.Sprintf("/request/%d", request.ID))
+		return
 	} else {
 		// Если ID указан в URL (/request/1)
 		requestID, err = strconv.Atoi(idStr)
@@ -38,9 +41,10 @@ func (h *Handler) GetRequest(ctx *gin.Context) {
 		}
 	}
 
-	request, err := h.Repository.GetRequest(requestID)
+	// Получаем заявку, но ИГНОРИРУЕМ УДАЛЕННЫЕ через ORM
+	request, err := h.Repository.GetRequestExcludingDeleted(requestID)
 	if err != nil {
-		logrus.Error(err)
+		logrus.Errorf("Заявка не найдена или удалена: %v", err)
 		ctx.HTML(http.StatusOK, "request.html", gin.H{
 			"request": ds.Request{},
 		})

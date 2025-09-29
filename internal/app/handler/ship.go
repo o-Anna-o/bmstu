@@ -26,18 +26,27 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 		}
 	}
 
-	// для подсчета кораблей в заявке
+	// для подсчета кораблей в заявке - используем ORM
 	requestCount := 0
+	var requestID int // для ID заявки
+
 	request, err := h.Repository.GetOrCreateUserDraft(1)
 	if err == nil {
-		// ДОБАВЬТЕ ОТЛАДОЧНУЮ ИНФОРМАЦИЮ
+		// Проверяем что заявка не удалена (GetOrCreateUserDraft уже исключает удаленные по статусу "черновик")
 		logrus.Infof("Найдена заявка ID=%d, количество кораблей в заявке: %d", request.ID, len(request.Ships))
 		for i, shipInRequest := range request.Ships {
 			logrus.Infof("Корабль %d: %s, количество: %d", i, shipInRequest.Ship.Name, shipInRequest.Count)
 			requestCount += shipInRequest.Count
 		}
+		// СОХРАНЯЕМ ID ЗАЯВКИ ДЛЯ ШАБЛОНА
+		requestID = request.ID
 	} else {
 		logrus.Errorf("Ошибка получения заявки: %v", err)
+		// Если ошибка, всё равно создаем/получаем заявку для получения ID
+		request, err = h.Repository.GetOrCreateUserDraft(1)
+		if err == nil {
+			requestID = request.ID
+		}
 	}
 
 	logrus.Infof("Итоговый счетчик для отображения: %d", requestCount)
@@ -46,6 +55,7 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 		"ships":         ships,
 		"search":        searchQuery,
 		"request_count": requestCount,
+		"request_id":    requestID, // ПЕРЕДАЕМ ID В ШАБЛОН
 	})
 }
 
