@@ -3,8 +3,6 @@ package handler
 import (
 	"context"
 	"loading_time/internal/app/repository"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -55,178 +53,26 @@ func NewHandler(r *repository.Repository) *Handler {
 	}
 }
 
-func (h *Handler) GetShips(ctx *gin.Context) {
-	var ships []repository.Ship
-	var err error
+// RegisterHandler Функция, в которой мы отдельно регистрируем маршруты, чтобы не писать все в одном месте
+func (h *Handler) RegisterHandler(router *gin.Engine) {
+	router.GET("/ships", h.GetShips)
+	router.GET("/ship/:id", h.GetShip)
+	router.GET("/request", h.GetRequest)
+	router.GET("/request/:id", h.GetRequest)
+}
 
-	nameQuery := ctx.Query("name_query")
+// RegisterStatic То же самое, что и с маршрутами, регистрируем статику
+func (h *Handler) RegisterStatic(router *gin.Engine) {
+	router.LoadHTMLGlob("templates/*")
+	router.Static("/styles", "./resources/styles")
+	router.Static("/img", "./resources/img")
+}
 
-	if nameQuery == "" {
-		ships, err = h.Repository.GetShips()
-	} else {
-		ships, err = h.Repository.GetShipsByName(nameQuery)
-	}
-
-	if err != nil {
-		logrus.Error(err)
-	}
-
-	// УПРОЩЕННЫЙ ПОДСЧЕТ - используем новый метод
-	requestCount, err := h.Repository.GetRequestCount(1) // userID = 1 для демо
-	if err != nil {
-		logrus.Error("Ошибка подсчета заявки:", err)
-		requestCount = 0 // В случае ошибки показываем 0
-	}
-
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"ships":         ships,
-		"name_query":    nameQuery,
-		"request_count": requestCount, // количество кораблей в заявке
+// errorHandler для более удобного вывода ошибок
+func (h *Handler) errorHandler(ctx *gin.Context, errorStatusCode int, err error) {
+	logrus.Error(err.Error())
+	ctx.JSON(errorStatusCode, gin.H{
+		"status":      "error",
+		"description": err.Error(),
 	})
-}
-
-func (h *Handler) GetShip(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		logrus.Error(err)
-		ctx.String(http.StatusBadRequest, "Invalid ship ID")
-		return
-	}
-
-	ship, err := h.Repository.GetShip(id)
-	if err != nil {
-		logrus.Error(err)
-		ctx.String(http.StatusNotFound, "Ship not found")
-		return
-	}
-
-	ctx.HTML(http.StatusOK, "ship.html", gin.H{
-		"ship": ship,
-	})
-}
-
-func (h *Handler) GetRequest(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-
-	if idStr == "" {
-		// Если ID не указан, показываем черновую заявку пользователя
-		request, err := h.Repository.GetOrCreateDraftRequest(1)
-		if err != nil {
-			ctx.HTML(http.StatusOK, "request.html", gin.H{
-				"request": repository.Request{
-					ID:      0,
-					Ships:   []repository.ShipInRequest{},
-					Comment: "Ошибка загрузки заявки",
-				},
-			})
-			return
-		}
-
-		ctx.HTML(http.StatusOK, "request.html", gin.H{
-			"request": request,
-		})
-		return
-	}
-
-	requestID, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid request ID")
-		return
-	}
-
-	request, err := h.Repository.GetRequest(requestID)
-	if err != nil {
-		ctx.HTML(http.StatusOK, "request.html", gin.H{
-			"request": repository.Request{
-				ID:      requestID,
-				Ships:   []repository.ShipInRequest{},
-				Comment: "Заявка не найдена или удалена",
-			},
-		})
-		return
-	}
-
-	ctx.HTML(http.StatusOK, "request.html", gin.H{
-		"request": request,
-	})
-}
-
-func (h *Handler) RemoveShipFromRequest(ctx *gin.Context) {
-	requestIDStr := ctx.Param("id")
-	shipIDStr := ctx.Param("ship_id")
-
-	requestID, err := strconv.Atoi(requestIDStr)
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid request ID")
-		return
-	}
-
-	shipID, err := strconv.Atoi(shipIDStr)
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid ship ID")
-		return
-	}
-
-	err = h.Repository.RemoveShipFromRequest(requestID, shipID)
-	if err != nil {
-		ctx.String(http.StatusNotFound, err.Error())
-		return
-	}
-
-	ctx.Redirect(http.StatusFound, "/request/"+requestIDStr)
-}
-
-// ИСПРАВЛЕННЫЙ МЕТОД: Добавление в заявку
-func (h *Handler) AddToRequest(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid ship ID")
-		return
-	}
-
-	// Проверяем существование корабля
-	_, err = h.Repository.GetShip(id)
-	if err != nil {
-		ctx.String(http.StatusNotFound, "Ship not found")
-		return
-	}
-
-	// Получаем или создаем черновую заявку
-	request, err := h.Repository.GetOrCreateDraftRequest(1) // userID = 1 для демо
-	if err != nil {
-		logrus.Error("Ошибка получения заявки:", err)
-		ctx.String(http.StatusInternalServerError, "Ошибка заявки")
-		return
-	}
-
-	// Добавляем корабль в заявку через БД
-	err = h.Repository.AddToRequest(request.ID, id)
-	if err != nil {
-		logrus.Error("Ошибка добавления в заявку:", err)
-		ctx.String(http.StatusInternalServerError, "Ошибка добавления")
-		return
-	}
-
-	ctx.Redirect(http.StatusFound, "/request/"+strconv.Itoa(request.ID))
-}
-
-// НОВЫЙ МЕТОД: Удаление заявки
-func (h *Handler) DeleteRequest(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	requestID, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Invalid request ID")
-		return
-	}
-
-	err = h.Repository.DeleteRequest(requestID)
-	if err != nil {
-		logrus.Error(err)
-		ctx.String(http.StatusInternalServerError, "Error deleting request")
-		return
-	}
-
-	ctx.Redirect(http.StatusFound, "/request")
 }
