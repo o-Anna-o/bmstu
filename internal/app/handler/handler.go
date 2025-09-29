@@ -59,6 +59,8 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/ship/:id", h.GetShip)
 	router.GET("/request", h.GetRequest)
 	router.GET("/request/:id", h.GetRequest)
+	router.POST("/request/add/:ship_id", h.AddShipToRequest) // через ORM
+	router.POST("/request/delete/:id", h.DeleteRequest)      // через SQL UPDATE
 }
 
 // RegisterStatic То же самое, что и с маршрутами, регистрируем статику

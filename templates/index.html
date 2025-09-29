@@ -39,7 +39,10 @@
             <p><b>Вместимость:</b> {{.Capacity}} TEU</p>
             <p><b>Краны:</b> {{.Cranes}} одновременно</p>
         </div>
-        <a href="/request/add/{{.ID}}" class="btn card-btn">Выбрать</a> 
+
+        <form action="/request/add/{{.ID}}" method="POST" style="display: inline;">
+            <button type="submit" class="btn card-btn">Выбрать</button>
+        </form>
     </li>
     {{ end }}
 </ul>
