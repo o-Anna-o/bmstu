@@ -57,10 +57,13 @@ func NewHandler(r *repository.Repository) *Handler {
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/ships", h.GetShips)
 	router.GET("/ship/:id", h.GetShip)
-	router.GET("/request", h.GetRequest)
 	router.GET("/request/:id", h.GetRequest)
-	router.POST("/request/add/:ship_id", h.AddShipToRequest) // через ORM
-	router.POST("/request/delete/:id", h.DeleteRequest)      // через SQL UPDATE
+
+	// POST маршруты
+	router.POST("/request/add/:ship_id", h.AddShipToRequest)
+	router.POST("/request/delete/:id", h.DeleteRequest)
+
+	router.POST("/request/:id/remove/:ship_id", h.RemoveShipFromRequest) //для удаления корабля из заявки
 }
 
 // RegisterStatic То же самое, что и с маршрутами, регистрируем статику

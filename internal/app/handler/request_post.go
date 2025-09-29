@@ -18,11 +18,24 @@ func (h *Handler) AddShipToRequest(c *gin.Context) {
 		return
 	}
 
-	// TODO: Заглушка - нужно реализовать через ORM
-	// Здесь должен быть код добавления корабля в заявку пользователя
+	// Получаем или создаем черновую заявку для пользователя (пока используем user_id = 1)
+	request, err := h.Repository.GetOrCreateUserDraft(1)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
 
-	logrus.Infof("Корабль %d добавлен в заявку через ORM", shipID)
-	c.Redirect(http.StatusFound, "/request")
+	// Добавляем корабль в заявку через ORM
+	err = h.Repository.AddShipToRequest(request.ID, shipID)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	logrus.Infof("Корабль %d добавлен в заявку %d через ORM", shipID, request.ID)
+	logrus.Infof("Добавление корабля %d, редирект на: /request/1", shipID)
+	c.Redirect(http.StatusFound, "/request/1")
+	c.Redirect(http.StatusFound, "/request/1")
 }
 
 // DeleteRequest - логическое удаление заявки через SQL
@@ -39,4 +52,30 @@ func (h *Handler) DeleteRequest(c *gin.Context) {
 
 	logrus.Infof("Заявка %d удалена через SQL UPDATE", requestID)
 	c.Redirect(http.StatusFound, "/ships")
+}
+
+// RemoveShipFromRequest - удаление корабля из заявки
+func (h *Handler) RemoveShipFromRequest(c *gin.Context) {
+	requestIDStr := c.Param("id")
+	shipIDStr := c.Param("ship_id")
+
+	requestID, err := strconv.Atoi(requestIDStr)
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	shipID, err := strconv.Atoi(shipIDStr)
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	err = h.Repository.RemoveShipFromRequest(requestID, shipID)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/request/"+requestIDStr)
 }

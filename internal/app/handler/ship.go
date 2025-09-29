@@ -13,32 +13,39 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	var ships []ds.Ship
 	var err error
 
-	searchQuery := ctx.Query("search") // получаем значение из нашего поля
-	if searchQuery == "" {             // если поле поиска пусто, то просто получаем из репозитория все записи
+	searchQuery := ctx.Query("search")
+	if searchQuery == "" {
 		ships, err = h.Repository.GetShips()
 		if err != nil {
 			logrus.Error(err)
 		}
 	} else {
-		ships, err = h.Repository.GetShipsByName(searchQuery) // в ином случае ищем корабль по названию
+		ships, err = h.Repository.GetShipsByName(searchQuery)
 		if err != nil {
 			logrus.Error(err)
 		}
 	}
 
 	// для подсчета кораблей в заявке
-	request, err := h.Repository.GetRequest(1)
 	requestCount := 0
+	request, err := h.Repository.GetOrCreateUserDraft(1)
 	if err == nil {
-		for _, shipInRequest := range request.Ships {
+		// ДОБАВЬТЕ ОТЛАДОЧНУЮ ИНФОРМАЦИЮ
+		logrus.Infof("Найдена заявка ID=%d, количество кораблей в заявке: %d", request.ID, len(request.Ships))
+		for i, shipInRequest := range request.Ships {
+			logrus.Infof("Корабль %d: %s, количество: %d", i, shipInRequest.Ship.Name, shipInRequest.Count)
 			requestCount += shipInRequest.Count
 		}
+	} else {
+		logrus.Errorf("Ошибка получения заявки: %v", err)
 	}
+
+	logrus.Infof("Итоговый счетчик для отображения: %d", requestCount)
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
 		"ships":         ships,
-		"search":        searchQuery,  // передаем введенный запрос обратно на страницу
-		"request_count": requestCount, // количество кораблей в заявке
+		"search":        searchQuery,
+		"request_count": requestCount,
 	})
 }
 

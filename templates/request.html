@@ -40,7 +40,9 @@
                         <p><b>Краны:</b> {{ .Ship.Cranes }} одновременно</p>
                     </div>
                     <div class="ship-card__other">
-                        <a class="ship-card__other-item ship-card__other-btn btn" href="/request/{{$.request.ID}}/remove/{{.Ship.ID}}"> Удалить </a>
+                        <form action="/request/{{$.request.ID}}/remove/{{.Ship.ID}}" method="POST" style="display: inline;">
+                            <button type="submit" class="ship-card__other-item ship-card__other-btn btn">Удалить</button>
+                        </form>
 
                         <div class="ship-card__other-item ship-card__cnt">
                             <p>Количество</p>
@@ -73,7 +75,11 @@
             {{ end }}
         </div>
 
-        
+        <div class="request-actions" style="margin-top: 20px; text-align: center;">
+            <form action="/request/delete/{{.request.ID}}" method="POST" style="display: inline;">
+                <button type="submit" class="btn danger-btn" style="background: #dc3545; color: white;">Удалить всю заявку</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -10,27 +10,41 @@ import (
 )
 
 func (h *Handler) GetRequest(ctx *gin.Context) {
-	idStr := ctx.Param("id") // получаем id заявки из урла (то есть из /request/:id)
-	// через двоеточие мы указываем параметры, которые потом сможем считать через функцию выше
+	idStr := ctx.Param("id")
+
+	var requestID int
+	var err error
 
 	if idStr == "" {
+		// Если ID не указан в URL (/request), используем заявку пользователя
+		request, err := h.Repository.GetOrCreateUserDraft(1)
+		if err != nil {
+			logrus.Error(err)
+			ctx.HTML(http.StatusOK, "request.html", gin.H{
+				"request": ds.Request{},
+			})
+			return
+		}
+		requestID = request.ID
+	} else {
+		// Если ID указан в URL (/request/1)
+		requestID, err = strconv.Atoi(idStr)
+		if err != nil {
+			logrus.Error(err)
+			ctx.HTML(http.StatusOK, "request.html", gin.H{
+				"request": ds.Request{},
+			})
+			return
+		}
+	}
+
+	request, err := h.Repository.GetRequest(requestID)
+	if err != nil {
+		logrus.Error(err)
 		ctx.HTML(http.StatusOK, "request.html", gin.H{
-			"request": ds.Request{
-				ID:    0,
-				Ships: []ds.ShipInRequest{},
-			},
+			"request": ds.Request{},
 		})
 		return
-	}
-
-	id, err := strconv.Atoi(idStr) // так как функция выше возвращает нам строку, нужно ее преобразовать в int
-	if err != nil {
-		logrus.Error(err)
-	}
-
-	request, err := h.Repository.GetRequest(id)
-	if err != nil {
-		logrus.Error(err)
 	}
 
 	ctx.HTML(http.StatusOK, "request.html", gin.H{
