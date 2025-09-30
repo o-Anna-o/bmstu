@@ -12,7 +12,7 @@
     <div class="request">
         
         <h1>Расчёт времени погрузки контейнеров</h1>  
-        
+
         <div class="request__counts">
             <div class="request__cnt request__cnt-20-f">
                 <p>Количество 20-футовых контейнеров</p>
@@ -75,11 +75,13 @@
             {{ end }}
         </div>
 
-        <div class="request-actions" style="margin-top: 20px; text-align: center;">
-            <form action="/request/delete/{{.request.ID}}" method="POST" style="display: inline;">
-                <button type="submit" class="btn danger-btn" style="background: #dc3545; color: white;">Удалить всю заявку</button>
-            </form>
-        </div>
+        <div class="request-actions">
+        <form action="/request/delete/{{.request.ID}}" method="POST">
+            <button type="submit" class="btn beige-btn">
+                Удалить всю заявку
+            </button>
+        </form>
+</div>
     </div>
 </body>
 </html>

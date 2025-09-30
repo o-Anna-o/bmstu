@@ -2,6 +2,8 @@ package repository
 
 import (
 	"loading_time/internal/app/ds"
+
+	"gorm.io/gorm"
 )
 
 func (r *Repository) GetRequest(id int) (ds.Request, error) {
@@ -22,6 +24,9 @@ func (r *Repository) GetOrCreateUserDraft(userID int) (ds.Request, error) {
 	err := r.db.Preload("Ships.Ship").Where("user_id = ? AND status = ?", userID, "черновик").First(&request).Error
 	if err == nil {
 		return request, nil // Заявка найдена
+	}
+	if err != gorm.ErrRecordNotFound {
+		return ds.Request{}, err // Возвращаем реальную ошибку (например, проблемы с БД)
 	}
 
 	// Создаем новую черновую заявку
@@ -50,7 +55,6 @@ func (r *Repository) AddShipToRequest(requestID, shipID int) error {
 		return r.db.Save(&existingShip).Error
 	}
 
-	// Корабля нет в заявке - создаем новую запись
 	shipInRequest := ds.ShipInRequest{
 		RequestID: requestID,
 		ShipID:    shipID,
