@@ -27,35 +27,35 @@ func (h *Handler) GetShips(ctx *gin.Context) {
 	}
 
 	// для подсчета кораблей в заявке - используем ORM
-	requestCount := 0
-	var requestID int // для ID заявки
+	request_shipCount := 0
+	var request_shipID int // для ID заявки
 
-	request, err := h.Repository.GetOrCreateUserDraft(1)
+	request_ship, err := h.Repository.GetOrCreateUserDraft(1)
 	if err == nil {
 		// Проверяем что заявка не удалена (GetOrCreateUserDraft уже исключает удаленные по статусу "черновик")
-		logrus.Infof("Найдена заявка ID=%d, количество кораблей в заявке: %d", request.ID, len(request.Ships))
-		for i, shipInRequest := range request.Ships {
-			logrus.Infof("Корабль %d: %s, количество: %d", i, shipInRequest.Ship.Name, shipInRequest.Count)
-			requestCount += shipInRequest.Count
+		logrus.Infof("Найдена заявка ID=%d, количество кораблей в заявке: %d", request_ship.ID, len(request_ship.Ships))
+		for i, shipInRequestShip := range request_ship.Ships {
+			logrus.Infof("Корабль %d: %s, количество: %d", i, shipInRequestShip.Ship.Name, shipInRequestShip.Count)
+			request_shipCount += shipInRequestShip.Count
 		}
 		// СОХРАНЯЕМ ID ЗАЯВКИ ДЛЯ ШАБЛОНА
-		requestID = request.ID
+		request_shipID = request_ship.ID
 	} else {
 		logrus.Errorf("Ошибка получения заявки: %v", err)
 		// Если ошибка, всё равно создаем/получаем заявку для получения ID
-		request, err = h.Repository.GetOrCreateUserDraft(1)
+		request_ship, err = h.Repository.GetOrCreateUserDraft(1)
 		if err == nil {
-			requestID = request.ID
+			request_shipID = request_ship.ID
 		}
 	}
 
-	logrus.Infof("Итоговый счетчик для отображения: %d", requestCount)
+	logrus.Infof("Итоговый счетчик для отображения: %d", request_shipCount)
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"ships":         ships,
-		"search":        searchQuery,
-		"request_count": requestCount,
-		"request_id":    requestID, // ПЕРЕДАЕМ ID В ШАБЛОН
+		"ships":              ships,
+		"search":             searchQuery,
+		"request_ship_count": request_shipCount,
+		"request_ship_id":    request_shipID,
 	})
 }
 

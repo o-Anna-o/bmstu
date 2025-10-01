@@ -13,7 +13,7 @@
 
 <form class="page__search" action="/ships" method="GET">
     <h1>
-            <a href="/request/{{.request_id}}" class="cart-link">
+            <a href="/request_ship/{{.request_id}}" class="cart-link">
             <img class="loading_time-img header-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nO3QMQ4BURSF4ckUEol1qGgobIGFaaxIi0ah0lAohE0QkU9GRvcGY15iIv72nXv+d2+S/BzoYq08a3RelTex8zl7tJ4JxnlwhbTE1imW+eykKNTGCVcM3i1/gH4+e0EvFJiKxywkyH4fi3NIcCepiKKerwnQwDZwhkVMwSYgmEcRlOUveMlfUG/BUTwOIcEoe4hRjmHVS9SHGxku7S0HDKVsAAAAAElFTkSuQmCC" alt="busket">
             {{if .request_count}}
                 <span class="cart-count">{{.request_count}}</span>
@@ -41,7 +41,7 @@
             <p><b>Краны:</b> {{.Cranes}} одновременно</p>
         </div>
 
-        <form action="/request/add/{{.ID}}" method="POST" style="display: inline;">
+        <form action="/request_ship/add/{{.ID}}" method="POST" style="display: inline;">
             <button type="submit" class="btn card-btn">Выбрать</button>
         </form>
     </li>

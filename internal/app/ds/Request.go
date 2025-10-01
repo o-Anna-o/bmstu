@@ -2,7 +2,7 @@ package ds
 
 import "time"
 
-type Request struct {
+type RequestShip struct {
 	ID                  int             `gorm:"primaryKey;column:id"`
 	Status              string          `gorm:"column:status"`
 	CreatedAt           time.Time       `gorm:"column:created_at"`
@@ -14,9 +14,9 @@ type Request struct {
 	Comment             string          `gorm:"column:comment"`
 	LoadingSpeed        string          `gorm:"column:loading_speed"`
 	LoadingTime         float64         `gorm:"column:loading_time"`
-	Ships               []ShipInRequest `gorm:"foreignKey:RequestID"`
+	Ships               []ShipInRequestShip `gorm:"foreignKey:RequestShipID"`
 }
 
-func (Request) TableName() string {
-	return "requests"
+func (RequestShip) TableName() string {
+	return "request_ships"
 }

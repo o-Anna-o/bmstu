@@ -19,8 +19,8 @@ func main() {
 	err = db.AutoMigrate(
 		&ds.User{},
 		&ds.Ship{},
-		&ds.Request{},
-		&ds.ShipInRequest{},
+		&ds.RequestShip{},
+		&ds.ShipInRequestShip{},
 	)
 	if err != nil {
 		panic("cant migrate db")

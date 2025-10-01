@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <title>Расчёт времени погрузки контейнеров</title>
-    <link rel="stylesheet" href="/styles/request_style.css">
+    <link rel="stylesheet" href="/styles/request_ship_style.css">
 </head>
 <body>
     <header>
@@ -40,7 +40,7 @@
                         <p><b>Краны:</b> {{ .Ship.Cranes }} одновременно</p>
                     </div>
                     <div class="ship-card__other">
-                        <form action="/request/{{$.request.ID}}/remove/{{.Ship.ID}}" method="POST" style="display: inline;">
+                        <form action="/request_ship/{{$.request.ID}}/remove/{{.Ship.ID}}" method="POST" style="display: inline;">
                             <button type="submit" class="ship-card__other-item ship-card__other-btn btn">Удалить</button>
                         </form>
 
@@ -76,7 +76,7 @@
         </div>
 
         <div class="request-actions">
-        <form action="/request/delete/{{.request.ID}}" method="POST">
+        <form action="/request_ship/delete/{{.request.ID}}" method="POST">
             <button type="submit" class="btn beige-btn">
                 Удалить всю заявку
             </button>
