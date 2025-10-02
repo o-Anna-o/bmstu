@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+    <title>Расчёт времени погрузки контейнеров</title>
+    <link rel="stylesheet" href="/styles/request_ship_style.css">
+</head>
+<body>
+    <header>
+        <h1>
+            <a href="/ships"><img class="home-img header-icon" src="/img/home-img.svg" alt="home"></a>
+        </h1>
+    </header>
+    <div class="request">
+        
+        <h1>Расчёт времени погрузки контейнеров</h1>  
+
+        <div class="request__counts">
+            <div class="request__cnt request__cnt-20-f">
+                <p>Количество 20-футовых контейнеров</p>
+                <input class="request__cnt-input request__cnt-20-f" type="number" name="containers_20ft" placeholder="Введите целое число" value=" {{.request.Containers20ftCount}} ">
+            </div>
+            <div class="request__cnt request__cnt-40-f">
+                <p>Количество 40-футовых контейнеров</p>
+                <input class="request__cnt-input  request__cnt-40-f" type="number" name="containers_40ft" placeholder="Введите целое число" value=" {{.request.Containers40ftCount}} ">
+            </div>
+        </div>
+        
+        <h2>Выбранные контейнеровозы</h2>
+        <div class="request__cards">
+            {{ if .request.Ships }}
+                {{ range .request.Ships }}
+                <div class="request__card">
+                    <h2 class="request__card__title">{{ .Ship.Name }}</h2>
+                    <img class="request__card__ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.Ship.PhotoURL}}" 
+                         alt="{{.Ship.Name}}"
+                         onerror="this.style.display='none'">
+
+                    <div class="ship-card__text">
+                        <p><b>Вместимость:</b> {{ .Ship.Capacity }} TEU</p>
+                        <p><b>Габариты:</b> длина {{ .Ship.Length }} м, ширина {{ .Ship.Width }} м</p>
+                        <p><b>Краны:</b> {{ .Ship.Cranes }} одновременно</p>
+                    </div>
+                    <div class="ship-card__other">
+                        <form action="/request_ship/{{$.request.ID}}/remove/{{.Ship.ID}}" method="POST" style="display: inline;">
+                            <button type="submit" class="ship-card__other-item ship-card__other-btn btn">Удалить</button>
+                        </form>
+
+                        <div class="ship-card__other-item ship-card__cnt">
+                            <p>Количество</p>
+                            <input class="ship-card__cnt-input" type="text" name="ship-card__time-input" placeholder="" value=" {{ .Count }} ">
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            {{ else }}
+                <div class="empty-message">
+                    <p>Нет выбранных контейнеровозов. Добавьте контейнеровоз для расчета.</p>
+                </div>
+            {{ end }}
+        </div>
+        <div class="fields">
+            <div class="fields_item fields__comment">
+                <p>Комментарий</p>
+                <input class="fields__comment--input" type="text" name="comment--input" value=" {{.request.Comment}} ">
+            </div>
+            <div class="fields_item fields__result">
+                <p>Общее время погрузки</p>
+                <input class="fields__result--input" type="text" name="result--input" value=" {{.request.LoadingTime}} ">
+            </div>
+        </div>
+
+        <div class="ship-card__btns">
+            <a href="/ships" class="ship-card__btn beige-btn btn">Добавить контейнеровоз</a>
+            {{ if .request.Ships }}
+                <a href="/ships" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
+            {{ end }}
+        </div>
+
+        <div class="request-actions">
+        <form action="/request_ship/delete/{{.request.ID}}" method="POST">
+            <button type="submit" class="btn beige-btn">
+                Удалить всю заявку
+            </button>
+        </form>
+</div>
+    </div>
+</body>
+</html>
