@@ -26,8 +26,8 @@
         
         <h2>Выбранные контейнеровозы</h2>
         <div class="request__cards">
-            {{ if .request_ship.Ships }}  <!-- ← request_ship -->
-                {{ range .request_ship.Ships }}  <!-- ← request_ship -->
+            {{ if .request_ship.Ships }}  
+                {{ range .request_ship.Ships }} 
                 <div class="request__card">
                     <h2 class="request__card__title">{{ .Ship.Name }}</h2>
                     <img class="request__card__ship-card__img" src="http://localhost:9000/loading-time-img/img/{{.Ship.PhotoURL}}" 
@@ -60,23 +60,23 @@
         <div class="fields">
             <div class="fields_item fields__comment">
                 <p>Комментарий</p>
-                <input class="fields__comment--input" type="text" name="comment--input" value=" {{.request_ship.Comment}} ">  <!-- ← request_ship -->
+                <input class="fields__comment--input" type="text" name="comment--input" value=" {{.request_ship.Comment}} "> 
             </div>
             <div class="fields_item fields__result">
                 <p>Общее время погрузки</p>
-                <input class="fields__result--input" type="text" name="result--input" value=" {{.request_ship.LoadingTime}} ">  <!-- ← request_ship -->
+                <input class="fields__result--input" type="text" name="result--input" value=" {{.request_ship.LoadingTime}} "> 
             </div>
         </div>
 
         <div class="ship-card__btns">
             <a href="/ships" class="ship-card__btn beige-btn btn">Добавить контейнеровоз</a>
-            {{ if .request_ship.Ships }}  <!-- ← request_ship -->
+            {{ if .request_ship.Ships }}  
                 <a href="/ships" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
             {{ end }}
         </div>
 
         <div class="request-actions">
-        <form action="/request_ship/delete/{{.request_ship.RequestShipID}}" method="POST">  <!-- ← RequestShipID -->
+        <form action="/request_ship/delete/{{.request_ship.RequestShipID}}" method="POST"> 
             <button type="submit" class="btn beige-btn">
                 Удалить всю заявку
             </button>

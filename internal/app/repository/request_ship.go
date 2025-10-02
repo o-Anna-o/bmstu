@@ -71,9 +71,8 @@ func (r *Repository) RemoveShipFromRequestShip(requestShipID, shipID int) error 
 }
 
 // логическое удаление заявки через SQL
-func (r *Repository) DeleteRequestShipSQL(request_shipID int) error {
-	// Выполняем SQL UPDATE без ORM - меняем статус на 'удалён'
-	return r.db.Exec("UPDATE request_ships SET status = 'удалён' WHERE id = ?", request_shipID).Error
+func (r *Repository) DeleteRequestShipSQL(requestShipID int) error {
+	return r.db.Exec("UPDATE request_ship SET status = 'удалён' WHERE request_ship_id = ?", requestShipID).Error
 }
 
 // GetRequestShipExcludingDeleted - получить заявку исключая удаленные (через ORM)

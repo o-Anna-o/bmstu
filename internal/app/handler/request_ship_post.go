@@ -36,20 +36,17 @@ func (h *Handler) AddShipToRequestShip(c *gin.Context) {
 
 // DeleteRequestShip - логическое удаление заявки
 func (h *Handler) DeleteRequestShip(c *gin.Context) {
-	request_shipIDStr := c.Param("id")
-	request_shipID, err := strconv.Atoi(request_shipIDStr)
+	requestShipID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		h.errorHandler(c, http.StatusBadRequest, err)
 		return
 	}
 
-	err = h.Repository.DeleteRequestShipSQL(request_shipID)
-	if err != nil {
+	if err := h.Repository.DeleteRequestShipSQL(requestShipID); err != nil {
 		h.errorHandler(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	logrus.Infof("Заявка %d удалена через SQL UPDATE (статус изменен на 'удалён')", request_shipID)
 	c.Redirect(http.StatusFound, "/ships")
 }
 
