@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// добавляет корабль в заявку
+// AddShipToRequestShip добавляет корабль в заявку
 func (h *Handler) AddShipToRequestShip(c *gin.Context) {
 	shipIDStr := c.Param("ship_id")
 	shipID, err := strconv.Atoi(shipIDStr)
@@ -24,17 +24,17 @@ func (h *Handler) AddShipToRequestShip(c *gin.Context) {
 		return
 	}
 
-	err = h.Repository.AddShipToRequestShip(request_ship.ID, shipID)
+	err = h.Repository.AddShipToRequestShip(request_ship.RequestShipID, shipID)
 	if err != nil {
 		h.errorHandler(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	logrus.Infof("Корабль %d добавлен в заявку %d через ORM", shipID, request_ship.ID)
-	c.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", request_ship.ID))
+	logrus.Infof("Корабль %d добавлен в заявку %d через ORM", shipID, request_ship.RequestShipID)
+	c.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", request_ship.RequestShipID))
 }
 
-// логическое удаление заявки
+// DeleteRequestShip - логическое удаление заявки
 func (h *Handler) DeleteRequestShip(c *gin.Context) {
 	request_shipIDStr := c.Param("id")
 	request_shipID, err := strconv.Atoi(request_shipIDStr)
@@ -53,7 +53,7 @@ func (h *Handler) DeleteRequestShip(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/ships")
 }
 
-// удаляет корабль из заявки
+// RemoveShipFromRequestShip удаляет корабль из заявки
 func (h *Handler) RemoveShipFromRequestShip(c *gin.Context) {
 	request_shipIDStr := c.Param("id")
 	shipIDStr := c.Param("ship_id")

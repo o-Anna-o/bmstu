@@ -10,7 +10,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// RegisterRoutes регистрирует маршруты, связанные с request_ship
 func (h *Handler) RegisterRoutes(router *gin.Engine) {
+	// Редирект с /request_ship на черновик пользователя
 	router.GET("/request_ship", func(ctx *gin.Context) {
 		request_ship, err := h.Repository.GetOrCreateUserDraft(1)
 		if err != nil {
@@ -21,13 +23,14 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 			})
 			return
 		}
-		ctx.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", request_ship.ID))
+		ctx.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", request_ship.RequestShipID))
 	})
 
 	// Основной маршрут для конкретной заявки
 	router.GET("/request_ship/:id", h.GetRequestShip)
 }
 
+// GetRequestShip отображает заявку по ID
 func (h *Handler) GetRequestShip(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
