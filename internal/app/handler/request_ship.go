@@ -27,9 +27,8 @@ func (h *Handler) GetRequestShip(ctx *gin.Context) {
 	requestShip, err := h.Repository.GetRequestShipExcludingDeleted(requestShipID)
 	if err != nil {
 		logrus.Errorf("Заявка не найдена или удалена: %v", err)
-		ctx.HTML(http.StatusNotFound, "request_ship.html", gin.H{
-			"request_ship": ds.RequestShip{},
-			"error":        "Заявка не найдена",
+		ctx.HTML(http.StatusNotFound, "PageNotFound.html", gin.H{
+			"id": idStr,
 		})
 		return
 	}
