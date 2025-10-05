@@ -10,32 +10,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// RegisterRoutes регистрирует маршруты, связанные с request_ship
-func (h *Handler) RegisterRoutes(router *gin.Engine) {
-	// Редирект с /request_ship на черновик пользователя
-	router.GET("/request_ship", func(ctx *gin.Context) {
-		request_ship, err := h.Repository.GetOrCreateUserDraft(1)
-		if err != nil {
-			logrus.Error(err)
-			ctx.HTML(http.StatusInternalServerError, "request_ship.html", gin.H{
-				"request_ship": ds.RequestShip{},
-				"error":        "Не удалось создать черновик",
-			})
-			return
-		}
-		ctx.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", request_ship.RequestShipID))
-	})
-
-	// Основной маршрут для конкретной заявки
-	router.GET("/request_ship/:id", h.GetRequestShip)
-}
-
-// GetRequestShip отображает заявку по ID
+// GET /request_ship/:id - просмотр заявки
 func (h *Handler) GetRequestShip(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-	request_shipID, err := strconv.Atoi(idStr)
-	if err != nil || request_shipID <= 0 {
+	requestShipID, err := strconv.Atoi(idStr)
+	if err != nil || requestShipID <= 0 {
 		logrus.Errorf("Неверный ID заявки: %v", idStr)
 		ctx.HTML(http.StatusBadRequest, "request_ship.html", gin.H{
 			"request_ship": ds.RequestShip{},
@@ -44,7 +24,7 @@ func (h *Handler) GetRequestShip(ctx *gin.Context) {
 		return
 	}
 
-	request_ship, err := h.Repository.GetRequestShipExcludingDeleted(request_shipID)
+	requestShip, err := h.Repository.GetRequestShipExcludingDeleted(requestShipID)
 	if err != nil {
 		logrus.Errorf("Заявка не найдена или удалена: %v", err)
 		ctx.HTML(http.StatusNotFound, "request_ship.html", gin.H{
@@ -55,6 +35,87 @@ func (h *Handler) GetRequestShip(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "request_ship.html", gin.H{
-		"request_ship": request_ship,
+		"request_ship": requestShip,
 	})
+}
+
+// GET /request_ship - редирект на черновик
+func (h *Handler) CreateOrRedirectRequestShip(ctx *gin.Context) {
+	requestShip, err := h.Repository.GetOrCreateUserDraft(1)
+	if err != nil {
+		logrus.Error(err)
+		ctx.HTML(http.StatusInternalServerError, "request_ship.html", gin.H{
+			"request_ship": ds.RequestShip{},
+			"error":        "Не удалось создать черновик",
+		})
+		return
+	}
+	ctx.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", requestShip.RequestShipID))
+}
+
+// POST /request_ship/add/:ship_id - добавить корабль
+func (h *Handler) AddShipToRequestShip(c *gin.Context) {
+	shipIDStr := c.Param("ship_id")
+	shipID, err := strconv.Atoi(shipIDStr)
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	requestShip, err := h.Repository.GetOrCreateUserDraft(1)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = h.Repository.AddShipToRequestShip(requestShip.RequestShipID, shipID)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	logrus.Infof("Корабль %d добавлен в заявку %d через ORM", shipID, requestShip.RequestShipID)
+	c.Redirect(http.StatusFound, fmt.Sprintf("/request_ship/%d", requestShip.RequestShipID))
+}
+
+// POST /request_ship/:id/remove/:ship_id - удалить корабль
+func (h *Handler) RemoveShipFromRequestShip(c *gin.Context) {
+	requestShipIDStr := c.Param("id")
+	shipIDStr := c.Param("ship_id")
+
+	requestShipID, err := strconv.Atoi(requestShipIDStr)
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	shipID, err := strconv.Atoi(shipIDStr)
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	err = h.Repository.RemoveShipFromRequestShip(requestShipID, shipID)
+	if err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/request_ship/"+requestShipIDStr)
+}
+
+// POST /request_ship/delete/:id - удалить заявку
+func (h *Handler) DeleteRequestShip(c *gin.Context) {
+	requestShipID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.errorHandler(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := h.Repository.DeleteRequestShipSQL(requestShipID); err != nil {
+		h.errorHandler(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/ships")
 }

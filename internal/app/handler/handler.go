@@ -2,10 +2,7 @@ package handler
 
 import (
 	"context"
-	"loading_time/internal/app/ds"
 	"loading_time/internal/app/repository"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -56,26 +53,11 @@ func NewHandler(r *repository.Repository) *Handler {
 
 // RegisterHandler регистрирует маршруты
 func (h *Handler) RegisterHandler(router *gin.Engine) {
-	// GET маршруты
 	router.GET("/ships", h.GetShips)
 	router.GET("/ship/:id", h.GetShip)
-
-	router.GET("/request_ship", func(ctx *gin.Context) {
-		request_ship, err := h.Repository.GetOrCreateUserDraft(1)
-		if err != nil {
-			logrus.Error(err)
-			ctx.HTML(http.StatusInternalServerError, "request_ship.html", gin.H{
-				"request_ship": ds.RequestShip{},
-				"error":        "Не удалось создать черновик",
-			})
-			return
-		}
-		ctx.Redirect(http.StatusFound, "/request_ship/"+strconv.Itoa(request_ship.RequestShipID))
-	})
-
+	router.GET("/request_ship", h.CreateOrRedirectRequestShip)
 	router.GET("/request_ship/:id", h.GetRequestShip)
 
-	// POST маршруты
 	router.POST("/request_ship/add/:ship_id", h.AddShipToRequestShip)
 	router.POST("/request_ship/delete/:id", h.DeleteRequestShip)
 	router.POST("/request_ship/:id/remove/:ship_id", h.RemoveShipFromRequestShip)
