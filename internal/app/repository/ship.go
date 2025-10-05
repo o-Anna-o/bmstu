@@ -20,7 +20,7 @@ func (r *Repository) GetShips() ([]ds.Ship, error) {
 
 func (r *Repository) GetShip(id int) (ds.Ship, error) {
 	ship := ds.Ship{}
-	err := r.db.Where("id = ?", id).First(&ship).Error
+	err := r.db.Where("ship_id = ?", id).First(&ship).Error
 	if err != nil {
 		return ds.Ship{}, err
 	}

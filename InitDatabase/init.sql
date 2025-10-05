@@ -15,14 +15,15 @@ CREATE TABLE users (
 CREATE TABLE ships (
     ship_id SERIAL PRIMARY KEY, 
     name VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,  
+    is_active BOOLEAN DEFAULT TRUE,  -- статус удален/действует
     capacity DECIMAL(10,2),               
     length DECIMAL(10,2),
     width DECIMAL(10,2),
     draft DECIMAL(10,2),
     cranes INTEGER,
     containers INTEGER,
-    features TEXT,
-    photo_url VARCHAR(500)
+    photo_url VARCHAR(500) NULL
 );
 
 -- 3. Таблица заявок (соответствует модели RequestShip)
@@ -30,14 +31,15 @@ CREATE TABLE request_ship (
     request_ship_id SERIAL PRIMARY KEY,  
     status VARCHAR(20) DEFAULT 'черновик',
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    formation_date TIMESTAMP NULL, 
     completion_date TIMESTAMP NULL, 
     moderator_id INTEGER NULL REFERENCES users(user_id),
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
     
-    containers_20ft_count INTEGER DEFAULT 0,
-    containers_40ft_count INTEGER DEFAULT 0,
+    containers_20ft_count INTEGER DEFAULT NULL,
+    containers_40ft_count INTEGER DEFAULT NULL,
     comment TEXT,
-    loading_time DECIMAL(10,2)  
+    loading_time DECIMAL(10,2) DEFAULT NULL
 );
 
 -- 4. М-М таблица (соответствует модели ShipInRequest) 
@@ -57,12 +59,12 @@ WHERE status = 'черновик';
 INSERT INTO users (fio, login, password, is_moderator) VALUES 
 ('Агапова Анна Денисовна', 'login001', 'password', true);
 
--- 7. Все корабли как в вашем коде
-INSERT INTO ships (name, capacity, length, width, draft, cranes, containers, features, photo_url) VALUES 
-('Ever Ace', 23992, 400, 61.53, 17.0, 6, 11996, 'самый большой в мире, двигатель Wartsila 70950 кВт', 'ever-ace.png'),
-('FESCO Diomid', 3108, 195, 32.20, 11.0, 3, 536, 'построен в 2010 г., судно класса Ice1 (для Арктики), дизельный двигатель, используется на Северном морском пути', 'fesco-diomid.png'),
-('HMM Algeciras', 23964, 399.9, 61.0, 16.5, 7, 11982, 'двигатель MAN B&W 11G95ME-C9.5 мощностью 64 000 кВт, двойные двигатели, система рекуперации энергии, класс DNV GL', 'hmm-algeciras.png'),
-('MSC Gulsun', 23756, 399.9, 61.4, 16.0, 7, 11878, 'первый в мире контейнеровоз, вмещающий более 23 000 TEU, двигатель MAN B&W 11G95ME-C9.5, класс DNV GL', 'msc-gulsun.png');
+-- 7. Все контейнеровозы 
+INSERT INTO ships (name, description, is_active, capacity, length, width, draft, cranes, containers, photo_url) VALUES 
+('Ever Ace', 'самый большой в мире, двигатель Wartsila 70950 кВт', true, 23992, 400, 61.53, 17.0, 6, 11996, 'ever-ace.png'),
+('FESCO Diomid', 'построен в 2010 г., судно класса Ice1 (для Арктики), дизельный двигатель, используется на Северном морском пути', true, 3108, 195, 32.20, 11.0, 3, 536, 'fesco-diomid.png'),
+('HMM Algeciras', 'двигатель MAN B&W 11G95ME-C9.5 мощностью 64 000 кВт, двойные двигатели, система рекуперации энергии, класс DNV GL', true, 23964, 399.9, 61.0, 16.5, 7, 11982, 'hmm-algeciras.png'),
+('MSC Gulsun', 'первый в мире контейнеровоз, вмещающий более 23 000 TEU, двигатель MAN B&W 11G95ME-C9.5, класс DNV GL', true, 23756, 399.9, 61.4, 16.0, 7, 11878, 'msc-gulsun.png');
 
 -- 8. Демо-заявка
 INSERT INTO request_ship (status, user_id, comment) VALUES 
