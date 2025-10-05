@@ -69,19 +69,16 @@
         </div>
 
         <div class="ship-card__btns">
-            <a href="/ships" class="ship-card__btn beige-btn btn">Добавить контейнеровоз</a>
-            {{ if .request_ship.Ships }}  
                 <a href="/ships" class="ship-card__btn beige-btn btn">Рассчитать время погрузки</a>
-            {{ end }}
+
+                <form action="/request_ship/delete/{{.request_ship.RequestShipID}}" method="POST" class="ship-card__btn-form">
+                    <button type="submit" class="ship-card__btn beige-btn btn">
+                        Удалить всю заявку
+                    </button>
+                </form>
+                
         </div>
 
-        <div class="request-actions">
-        <form action="/request_ship/delete/{{.request_ship.RequestShipID}}" method="POST"> 
-            <button type="submit" class="btn beige-btn">
-                Удалить всю заявку
-            </button>
-        </form>
-</div>
     </div>
 </body>
 </html>
