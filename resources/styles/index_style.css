@@ -38,6 +38,11 @@ p {
     cursor: pointer;
     padding-left: 24px;
 }
+.cart-link-icon {
+    height: 40px;
+    cursor: not-allowed;
+    padding-left: 24px;
+}
 
 .header {
     width: 1295px;
@@ -137,7 +142,7 @@ ul li a {
 }
 
 .cart-link--disabled {
-    cursor: not-allowed;
+    cursor: none;
     opacity: 0.5;
     filter: grayscale(100%); 
 }
