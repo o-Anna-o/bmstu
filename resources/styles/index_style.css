@@ -127,11 +127,20 @@ ul li a {
     width: 489px;
     padding: 14px 32px;
 }
+
 .cart-link {
     position: relative;
     display: inline-block; /* чтобы позиционировать дочерние элементы */
     text-decoration: none;
+    cursor: pointer;
 }
+
+.cart-link--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    filter: grayscale(100%); 
+}
+
 
 .cart-count {
     position: absolute;
