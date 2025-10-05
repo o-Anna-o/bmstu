@@ -33,14 +33,14 @@ h2 {
 p {
     font-size: 25px;
 }
-.header-icon {
+.header-icon, .cart-link-icon {
     height: 40px;
     cursor: pointer;
     padding-left: 24px;
 }
-.cart-link-icon {
+.cart-link-icon--disabled {
     height: 40px;
-    cursor: not-allowed;
+    cursor: default;
     padding-left: 24px;
 }
 
