@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"context"
+	"loading_time/internal/app/handler/api"
 	"loading_time/internal/app/repository"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +13,10 @@ import (
 type Handler struct {
 	Repository  *repository.Repository
 	MinioClient *minio.Client
+	// Добавляем API handlers
+	ShipAPIHandler        *api.ShipHandler
+	RequestShipAPIHandler *api.RequestShipHandler
+	UserAPIHandler        *api.UserHandler
 }
 
 func NewHandler(r *repository.Repository) *Handler {
@@ -27,32 +31,24 @@ func NewHandler(r *repository.Repository) *Handler {
 	})
 	if err != nil {
 		logrus.Errorf("MinIO connection error: %v", err)
-		return &Handler{
-			Repository:  r,
-			MinioClient: nil,
-		}
-	}
-
-	logrus.Info("MinIO connected successfully")
-
-	bucketName := "loading-time-img"
-	exists, err := client.BucketExists(context.Background(), bucketName)
-	if err != nil {
-		logrus.Errorf("Bucket check error: %v", err)
-	} else if exists {
-		logrus.Infof("Bucket %s is available", bucketName)
+		client = nil
 	} else {
-		logrus.Warnf("Bucket %s does not exist", bucketName)
+		logrus.Info("MinIO connected successfully")
 	}
 
 	return &Handler{
 		Repository:  r,
 		MinioClient: client,
+		// Инициализируем API handlers
+		ShipAPIHandler:        &api.ShipHandler{Repository: r},
+		RequestShipAPIHandler: &api.RequestShipHandler{Repository: r},
+		UserAPIHandler:        &api.UserHandler{Repository: r},
 	}
 }
 
 // RegisterHandler регистрирует маршруты
 func (h *Handler) RegisterHandler(router *gin.Engine) {
+	// HTML методы
 	router.GET("/ships", h.GetShips)
 	router.GET("/ship/:id", h.GetShip)
 	router.GET("/request_ship", h.CreateOrRedirectRequestShip)
@@ -61,6 +57,22 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.POST("/request_ship/add/:ship_id", h.AddShipToRequestShip)
 	router.POST("/request_ship/delete/:id", h.DeleteRequestShip)
 	router.POST("/request_ship/:id/remove/:ship_id", h.RemoveShipFromRequestShip)
+
+	// API маршруты через API handlers
+	apiGroup := router.Group("/api")
+	{
+		// Домен услуги (контейнеровозы)
+		apiGroup.GET("/ships", h.ShipAPIHandler.GetShipsAPI)
+		apiGroup.GET("/ships/:id", h.ShipAPIHandler.GetShipAPI)
+
+		// Домен заявки
+		apiGroup.GET("/requests/basket", h.RequestShipAPIHandler.GetRequestsBasketAPI)
+		apiGroup.GET("/requests", h.RequestShipAPIHandler.GetRequestsAPI)
+
+		// Домен пользователь
+		apiGroup.POST("/users/register", h.UserAPIHandler.RegisterUserAPI)
+		apiGroup.GET("/users/profile", h.UserAPIHandler.GetUserProfileAPI)
+	}
 }
 
 // RegisterStatic регистрирует статику

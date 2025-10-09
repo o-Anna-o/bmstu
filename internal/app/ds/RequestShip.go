@@ -1,6 +1,8 @@
 package ds
 
-import "time"
+import (
+	"time"
+)
 
 type RequestShip struct {
 	RequestShipID       int             `gorm:"primaryKey;column:request_ship_id"`
@@ -17,4 +19,20 @@ type RequestShip struct {
 
 func (RequestShip) TableName() string {
 	return "request_ship"
+}
+
+func (r *RequestShip) CalculateLoadingTime() float64 {
+	// общее время = (20ft * 2 + 40ft * 3) / количество кранов
+	// 2 - это часы на погрузку одного 20ft контейнера и 3 -соответственно одного 40ft контейнера
+	totalCranes := 0
+	for _, shipInRequest := range r.Ships {
+		totalCranes += shipInRequest.Ship.Cranes * shipInRequest.ShipsCount
+	}
+
+	if totalCranes == 0 {
+		return 0
+	}
+
+	totalContainerTime := float64(r.Containers20ftCount)*2 + float64(r.Containers40ftCount)*3
+	return totalContainerTime / float64(totalCranes)
 }
